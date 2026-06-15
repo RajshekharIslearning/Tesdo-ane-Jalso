@@ -1,0 +1,236 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================
+// AUTH MODELS (NextAuth.js)
+// ============================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================
+// USER
+// ============================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(USER)
+  passwordHash  String?   // for credentials provider (admin)
+  accounts      Account[]
+  sessions      Session[]
+  ratings       Rating[]
+  favorites     Favorite[]
+  reports       Report[]
+  vendors       Vendor[]  @relation("VendorAddedBy")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// ============================
+// VENDOR
+// ============================
+
+model Vendor {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  name         String
+  speciality   String
+  locality     String
+  address      String?
+  description  String?       @db.Text
+  isVerified   Boolean       @default(false)
+  isFeatured   Boolean       @default(false)
+  status       VendorStatus  @default(PENDING)
+  ratingSum    Float         @default(0)
+  ratingCount  Int           @default(0)
+  ratings      Rating[]
+  images       VendorImage[]
+  favorites    Favorite[]
+  reports      Report[]
+  addedBy      User?         @relation("VendorAddedBy", fields: [addedById], references: [id])
+  addedById    String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([locality])
+  @@index([speciality])
+  @@index([status])
+  @@index([isFeatured])
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ============================
+// RATING / REVIEW
+// ============================
+
+model Rating {
+  id          String   @id @default(cuid())
+  stars       Int      // 1-5
+  comment     String?  @db.Text
+  userId      String?
+  fingerprint String?  // anonymous user fingerprint
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@unique([vendorId, userId])
+  @@unique([vendorId, fingerprint])
+  @@index([vendorId])
+}
+
+// ============================
+// VENDOR IMAGES
+// ============================
+
+model VendorImage {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String?  // Cloudinary public ID for deletion
+  caption   String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([vendorId])
+}
+
+// ============================
+// FAVORITES / BOOKMARKS
+// ============================
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  vendorId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, vendorId])
+}
+
+// ============================
+// REPORTS (Moderation)
+// ============================
+
+model Report {
+  id         String       @id @default(cuid())
+  type       ReportType
+  reason     String
+  details    String?      @db.Text
+  vendorId   String?
+  ratingId   String?
+  userId     String?
+  status     ReportStatus @default(PENDING)
+  vendor     Vendor?      @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  user       User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  resolvedAt DateTime?
+  createdAt  DateTime     @default(now())
+
+  @@index([status])
+}
+
+enum ReportType {
+  VENDOR
+  RATING
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+// ============================
+// CONTACT MESSAGES
+// ============================
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ============================
+// NEWSLETTER
+// ============================
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+// ============================
+// CMS / SITE CONTENT
+// ============================
+
+model SiteContent {
+  id        String   @id  // e.g. "privacy", "about", "faq", "terms", "settings"
+  title     String?
+  content   String   @db.Text
+  metadata  Json?
+  updatedAt DateTime @updatedAt
+}
