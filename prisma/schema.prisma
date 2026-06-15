@@ -6,8 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
 }
 
 // ============================
@@ -20,12 +19,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String? 
+  access_token      String? 
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String? 
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -59,7 +58,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  role          Role      @default(USER)
+  role          String    @default("USER")
   passwordHash  String?   // for credentials provider (admin)
   accounts      Account[]
   sessions      Session[]
@@ -71,10 +70,7 @@ model User {
   updatedAt     DateTime  @updatedAt
 }
 
-enum Role {
-  USER
-  ADMIN
-}
+
 
 // ============================
 // VENDOR
@@ -87,10 +83,10 @@ model Vendor {
   speciality   String
   locality     String
   address      String?
-  description  String?       @db.Text
+  description  String?       
   isVerified   Boolean       @default(false)
   isFeatured   Boolean       @default(false)
-  status       VendorStatus  @default(PENDING)
+  status       String        @default("PENDING")
   ratingSum    Float         @default(0)
   ratingCount  Int           @default(0)
   ratings      Rating[]
@@ -108,11 +104,7 @@ model Vendor {
   @@index([isFeatured])
 }
 
-enum VendorStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
+
 
 // ============================
 // RATING / REVIEW
@@ -121,7 +113,7 @@ enum VendorStatus {
 model Rating {
   id          String   @id @default(cuid())
   stars       Int      // 1-5
-  comment     String?  @db.Text
+  comment     String?  
   userId      String?
   fingerprint String?  // anonymous user fingerprint
   vendorId    String
@@ -172,13 +164,13 @@ model Favorite {
 
 model Report {
   id         String       @id @default(cuid())
-  type       ReportType
+  type       String
   reason     String
-  details    String?      @db.Text
+  details    String?      
   vendorId   String?
   ratingId   String?
   userId     String?
-  status     ReportStatus @default(PENDING)
+  status     String       @default("PENDING")
   vendor     Vendor?      @relation(fields: [vendorId], references: [id], onDelete: SetNull)
   user       User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   resolvedAt DateTime?
@@ -187,17 +179,7 @@ model Report {
   @@index([status])
 }
 
-enum ReportType {
-  VENDOR
-  RATING
-  OTHER
-}
 
-enum ReportStatus {
-  PENDING
-  RESOLVED
-  DISMISSED
-}
 
 // ============================
 // CONTACT MESSAGES
@@ -208,7 +190,7 @@ model ContactMessage {
   name      String
   email     String
   subject   String
-  message   String   @db.Text
+  message   String   
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
@@ -230,7 +212,7 @@ model NewsletterSubscriber {
 model SiteContent {
   id        String   @id  // e.g. "privacy", "about", "faq", "terms", "settings"
   title     String?
-  content   String   @db.Text
+  content   String   
   metadata  Json?
   updatedAt DateTime @updatedAt
 }
