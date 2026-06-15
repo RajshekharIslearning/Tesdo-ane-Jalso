@@ -76,14 +76,7 @@ export default function Footer() {
                     transition: "all 0.2s ease",
                     textDecoration: "none",
                   }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.color = "var(--brand-light)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "oklch(0.70 0.19 55 / 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border-subtle)";
-                  }}
+                  className="hover:border-[oklch(0.70_0.19_55/0.4)] hover:text-[var(--brand-light)]"
                 >
                   {icon}
                 </a>
@@ -170,8 +163,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
         marginBottom: "0.375rem",
         transition: "color 0.15s ease",
       }}
-      onMouseEnter={(e) => { (e.target as HTMLElement).style.color = "var(--brand-light)"; }}
-      onMouseLeave={(e) => { (e.target as HTMLElement).style.color = "var(--text-secondary)"; }}
+      className="hover:text-[var(--brand-light)]"
     >
       {children}
     </Link>

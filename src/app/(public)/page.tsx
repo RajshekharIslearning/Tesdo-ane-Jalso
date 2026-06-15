@@ -246,20 +246,12 @@ export default async function HomePage() {
                 style={{ textDecoration: "none" }}
               >
                 <div
-                  className="card"
+                  className="card hover:border-[oklch(0.70_0.19_55/0.4)] hover:bg-[oklch(0.70_0.19_55/0.06)]"
                   style={{
                     padding: "1rem",
                     textAlign: "center",
                     cursor: "pointer",
                     transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "oklch(0.70 0.19 55 / 0.4)";
-                    (e.currentTarget as HTMLElement).style.background = "oklch(0.70 0.19 55 / 0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border-subtle)";
-                    (e.currentTarget as HTMLElement).style.background = "var(--surface-raised)";
                   }}
                 >
                   <div style={{ fontSize: "1.75rem", marginBottom: "0.5rem" }}>

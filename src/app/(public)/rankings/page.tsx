@@ -154,14 +154,7 @@ export default async function RankingsPage() {
                               textDecoration: "none",
                               transition: "all 0.15s ease",
                             }}
-                            onMouseEnter={(e) => {
-                              (e.currentTarget as HTMLElement).style.borderColor = "oklch(0.70 0.19 55 / 0.4)";
-                              (e.currentTarget as HTMLElement).style.color = "var(--brand-light)";
-                            }}
-                            onMouseLeave={(e) => {
-                              (e.currentTarget as HTMLElement).style.borderColor = "var(--border-subtle)";
-                              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-                            }}
+                            className="hover:border-[oklch(0.70_0.19_55/0.4)] hover:text-[var(--brand-light)]"
                           >
                             {SPECIALITY_EMOJIS[v.speciality] ?? "🍴"} {v.name}
                             {v.ratingCount > 0 && (

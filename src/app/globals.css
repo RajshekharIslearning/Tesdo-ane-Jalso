@@ -1,5 +1,5 @@
+
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap");
 
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
@@ -462,10 +462,8 @@ h1, h2, h3 {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, oklch(0.76 0.17 55), var(--gold));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--brand-light);
+  font-weight: 800;
 }
 
 .ring-brand {

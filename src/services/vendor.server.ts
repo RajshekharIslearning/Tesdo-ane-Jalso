@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Vendor, VendorStatus } from "@prisma/client";
+import { Vendor } from "@prisma/client";
 import { generateSlug, uniqueSlug } from "@/utils/slug";
 import type { VendorSummary, PaginatedResult, LocalityRanking } from "@/types";
 import type { VendorSearchParams } from "@/schemas";
@@ -37,7 +37,7 @@ export async function getVendors(params: VendorSearchParams): Promise<PaginatedR
   const skip = (page - 1) * limit;
 
   const where = {
-    status: "APPROVED" as VendorStatus,
+    status: "APPROVED",
     ...(locality ? { locality } : {}),
     ...(speciality ? { speciality } : {}),
     ...(search

@@ -44,9 +44,14 @@ export const metadata: Metadata = {
   },
 };
 
+import { Inter, Sora } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const sora = Sora({ subsets: ["latin"], variable: "--font-display" });
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${sora.variable}`}>
       <body>
         {children}
         <Toaster
@@ -54,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           richColors
           closeButton
           toastOptions={{
-            style: { fontFamily: "Inter, sans-serif" },
+            style: { fontFamily: "var(--font-sans), sans-serif" },
           }}
         />
       </body>
