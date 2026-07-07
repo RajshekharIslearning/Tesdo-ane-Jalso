@@ -9,9 +9,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface-base)" }}>
+    <div className="admin-layout" style={{ display: "flex", minHeight: "100vh", background: "var(--surface-base)" }}>
       <AdminSidebar />
-      <main style={{ flex: 1, overflow: "auto", padding: "2rem" }}>
+      <main style={{ flex: 1, overflow: "auto", padding: "clamp(1rem, 3vw, 2rem)" }}>
         {children}
       </main>
     </div>

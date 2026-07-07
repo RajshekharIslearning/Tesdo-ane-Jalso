@@ -18,6 +18,7 @@ export default function AdminSidebar() {
 
   return (
     <aside
+      className="admin-sidebar-aside"
       style={{
         width: 220,
         flexShrink: 0,
@@ -30,10 +31,14 @@ export default function AdminSidebar() {
         top: 0,
         height: "100vh",
         overflow: "auto",
+        gap: "0",
       }}
     >
-      {/* Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "1.75rem", paddingLeft: "0.25rem" }}>
+      {/* Logo — hidden on mobile via .admin-sidebar-logo */}
+      <div
+        className="admin-sidebar-logo"
+        style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "1.75rem", paddingLeft: "0.25rem" }}
+      >
         <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg, oklch(0.68 0.20 42), oklch(0.76 0.17 55))", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <ShoppingBag size={16} color="#fff" />
         </div>
@@ -44,7 +49,7 @@ export default function AdminSidebar() {
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      <nav className="admin-sidebar-nav" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
         {NAV.map(({ href, label, icon: Icon }) => {
           const isActive = href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
           return (
@@ -61,8 +66,8 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "0.75rem" }}>
-        <Link href="/" className="admin-nav-item" style={{ marginBottom: "0.25rem" }}>
+      <div className="admin-sidebar-footer" style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "0.75rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <Link href="/" className="admin-nav-item">
           ← Back to Site
         </Link>
         <button

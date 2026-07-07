@@ -76,10 +76,10 @@ export default async function HomePage() {
           </p>
 
           <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/browse" className="btn btn-primary btn-lg">
+            <Link href="/browse" className="btn btn-primary btn-lg" style={{ flex: "1 1 auto", maxWidth: 220 }}>
               🔍 Browse Vendors
             </Link>
-            <Link href="/add" className="btn btn-secondary btn-lg">
+            <Link href="/add" className="btn btn-secondary btn-lg" style={{ flex: "1 1 auto", maxWidth: 220 }}>
               ➕ Add a Vendor
             </Link>
           </div>

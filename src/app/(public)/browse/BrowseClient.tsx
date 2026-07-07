@@ -108,6 +108,7 @@ export default function BrowseClient() {
 
       {/* FILTER BAR */}
       <div
+        className="browse-filter-bar"
         style={{
           background: "var(--surface-raised)",
           border: "1px solid var(--border-subtle)",

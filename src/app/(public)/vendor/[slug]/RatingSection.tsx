@@ -71,7 +71,7 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
       </h3>
 
       {/* Stars */}
-      <div style={{ display: "flex", gap: "0.375rem", marginBottom: "0.5rem" }}>
+      <div style={{ display: "flex", gap: "0.25rem", marginBottom: "0.5rem" }}>
         {[1, 2, 3, 4, 5].map((s) => (
           <button
             key={s}
@@ -82,12 +82,17 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
               background: "none",
               border: "none",
               cursor: "pointer",
-              fontSize: "2rem",
+              fontSize: "2.25rem",
               color: (hover || stars) >= s ? "var(--gold)" : "var(--surface-subtle)",
               transition: "color 0.1s ease, transform 0.1s ease",
-              transform: (hover || stars) >= s ? "scale(1.1)" : "scale(1)",
-              padding: "0.1rem",
+              transform: (hover || stars) >= s ? "scale(1.15)" : "scale(1)",
+              padding: "0.25rem",
               lineHeight: 1,
+              minWidth: 48,
+              minHeight: 48,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
             aria-label={`Rate ${s} star${s !== 1 ? "s" : ""}`}
           >
