@@ -7,7 +7,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#0f0f0f",
+  themeColor: "#fbf9f4",
 };
 
 export const metadata: Metadata = {
@@ -51,14 +51,14 @@ export const metadata: Metadata = {
   },
 };
 
-import { Inter, Sora } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const sora = Sora({ subsets: ["latin"], variable: "--font-display" });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-display" });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${sora.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable}`}>
       <body>
         {children}
         <Toaster

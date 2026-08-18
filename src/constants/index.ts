@@ -25,39 +25,6 @@ export const SPECIALITIES = [
 
 export type Speciality = (typeof SPECIALITIES)[number];
 
-export const SPECIALITY_EMOJIS: Record<string, string> = {
-  "Pani Puri / Golgappa": "🫧",
-  "Dabeli": "🫓",
-  "Bhel Puri": "🍿",
-  "Sev Puri": "🥗",
-  "Ragda Pattice": "🥔",
-  "Vada Pav": "🍔",
-  "Chole Bhature": "🫘",
-  "Kachori": "🥟",
-  "Samosa": "🔺",
-  "Jalebi": "🌀",
-  "Fafda & Jalebi": "🌀",
-  "Chai & Nashta": "☕",
-  "Khaman / Dhokla": "🟡",
-  "Thepla": "🫓",
-  "Sandwich": "🥪",
-  "Pav Bhaji": "🍛",
-  "Corn": "🌽",
-  "Ice Gola": "🧊",
-  "Lassi": "🥛",
-  "Juice": "🥤",
-  "Tawa Pulao": "🍚",
-  "Maggi": "🍜",
-  "Frankie / Roll": "🌯",
-  "Momo": "🥟",
-  "Chaat": "🍽️",
-  "Dosa": "🫓",
-  "Idli Vada": "⚪",
-  "Biryani": "🍚",
-  "Sweets & Mithai": "🍬",
-  "Other": "🍴",
-};
-
 export const STAR_LABELS = ["", "Poor", "Below Average", "Average", "Good", "Excellent"] as const;
 
 export const SORT_OPTIONS = [

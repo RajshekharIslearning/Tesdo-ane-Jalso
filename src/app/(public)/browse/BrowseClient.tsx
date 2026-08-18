@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, MapPin, Filter, ChevronDown } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LOCALITIES, SPECIALITIES, SPECIALITY_EMOJIS, SORT_OPTIONS } from "@/constants";
-import { formatRating } from "@/utils/format";
+import { LOCALITIES, SPECIALITIES, SORT_OPTIONS } from "@/constants";
+import { formatRating, pluralize } from "@/utils/format";
 import { useDebounce } from "@/hooks/useDebounce";
 
 type VendorSummary = {
@@ -85,24 +85,15 @@ export default function BrowseClient() {
   const hasFilters = search || locality || speciality || sort !== "rating";
 
   return (
-    <div className="container-page" style={{ paddingTop: "2rem", paddingBottom: "4rem" }}>
+    <div className="container-page" style={{ paddingTop: "64px", paddingBottom: "120px" }}>
 
       {/* PAGE HEADER */}
-      <div style={{ marginBottom: "2rem" }}>
-        <h1
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-            fontWeight: 800,
-            color: "var(--text-primary)",
-            letterSpacing: "-0.02em",
-            marginBottom: "0.5rem",
-          }}
-        >
-          Browse Vendors
+      <div style={{ marginBottom: "64px", borderBottom: "1px solid var(--color-deep-charcoal)", paddingBottom: "24px" }}>
+        <h1 className="display-xl" style={{ marginBottom: "16px" }}>
+          The Directory.
         </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>
-          Discover and rate the best street food vendors across Ahmedabad
+        <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", maxWidth: "600px" }}>
+          Discover the best street food vendors across Ahmedabad. Filter by locality, speciality, or community rating.
         </p>
       </div>
 
@@ -110,67 +101,74 @@ export default function BrowseClient() {
       <div
         className="browse-filter-bar"
         style={{
-          background: "var(--surface-raised)",
-          border: "1px solid var(--border-subtle)",
-          borderRadius: 16,
-          padding: "1rem 1.25rem",
-          marginBottom: "1.5rem",
+          background: "var(--color-paper-ivory)",
+          border: "1px solid var(--color-deep-charcoal)",
+          padding: "24px",
+          marginBottom: "48px",
           display: "flex",
-          gap: "0.75rem",
+          gap: "24px",
           flexWrap: "wrap",
-          alignItems: "center",
+          alignItems: "flex-end",
         }}
       >
         {/* Search */}
-        <div style={{ flex: "1 1 200px", position: "relative" }}>
-          <Search size={16} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", pointerEvents: "none" }} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search vendors or food..."
-            className="input"
-            style={{ paddingLeft: "2.25rem" }}
-          />
+        <div style={{ flex: "1 1 240px", position: "relative" }}>
+          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Search</label>
+          <div style={{ position: "relative" }}>
+            <Search size={18} style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)" }} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Vendors or food..."
+              className="input"
+              style={{ paddingLeft: "32px", fontSize: "16px" }}
+            />
+          </div>
         </div>
 
         {/* Locality */}
-        <div style={{ position: "relative", flex: "0 0 auto" }}>
-          <MapPin size={14} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", pointerEvents: "none" }} />
-          <select
-            value={locality}
-            onChange={(e) => setLocality(e.target.value)}
-            className="input"
-            style={{ paddingLeft: "2rem", minWidth: 150, appearance: "none", cursor: "pointer" }}
-          >
-            <option value="">All Localities</option>
-            {[...LOCALITIES].sort().map((l) => (
-              <option key={l} value={l}>{l}</option>
-            ))}
-          </select>
+        <div style={{ position: "relative", flex: "1 1 180px" }}>
+          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Locality</label>
+          <div style={{ position: "relative" }}>
+            <MapPin size={18} style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)", pointerEvents: "none" }} />
+            <select
+              value={locality}
+              onChange={(e) => setLocality(e.target.value)}
+              className="input"
+              style={{ paddingLeft: "32px", appearance: "none", cursor: "pointer", fontSize: "16px" }}
+            >
+              <option value="">All Localities</option>
+              {[...LOCALITIES].sort().map((l) => (
+                <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Speciality */}
-        <div style={{ position: "relative", flex: "0 0 auto" }}>
+        <div style={{ position: "relative", flex: "1 1 180px" }}>
+          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Category</label>
           <select
             value={speciality}
             onChange={(e) => setSpeciality(e.target.value)}
             className="input"
-            style={{ minWidth: 160, appearance: "none", cursor: "pointer" }}
+            style={{ appearance: "none", cursor: "pointer", fontSize: "16px" }}
           >
             <option value="">All Categories</option>
             {SPECIALITIES.map((s) => (
-              <option key={s} value={s}>{SPECIALITY_EMOJIS[s]} {s}</option>
+              <option key={s} value={s}>{s}</option>
             ))}
           </select>
         </div>
 
         {/* Sort */}
-        <div style={{ position: "relative", flex: "0 0 auto" }}>
+        <div style={{ position: "relative", flex: "1 1 180px" }}>
+          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Sort By</label>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
             className="input"
-            style={{ minWidth: 150, appearance: "none", cursor: "pointer" }}
+            style={{ appearance: "none", cursor: "pointer", fontSize: "16px" }}
           >
             {SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -179,15 +177,15 @@ export default function BrowseClient() {
         </div>
 
         {hasFilters && (
-          <button onClick={clearFilters} className="btn btn-ghost btn-sm">
-            ✕ Clear
+          <button onClick={clearFilters} className="btn" style={{ border: "1px solid var(--color-deep-charcoal)", color: "var(--color-deep-charcoal)", background: "transparent", padding: "10px 20px" }}>
+            Clear Filters
           </button>
         )}
       </div>
 
       {/* RESULT COUNT */}
-      <div style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginBottom: "1.25rem" }}>
-        {loading ? "Searching..." : `${result?.total ?? 0} vendor${result?.total !== 1 ? "s" : ""} found`}
+      <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", borderBottom: "1px solid var(--color-deep-charcoal)", paddingBottom: "16px" }}>
+        {loading ? "Searching Directory..." : `Showing ${pluralize(result?.total ?? 0, "Result")}`}
       </div>
 
       {/* VENDOR GRID */}
@@ -200,9 +198,9 @@ export default function BrowseClient() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: "1rem",
-              marginBottom: "2rem",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: "24px",
+              marginBottom: "64px",
             }}
           >
             {result!.data.map((vendor) => (
@@ -212,25 +210,25 @@ export default function BrowseClient() {
 
           {/* PAGINATION */}
           {result!.totalPages > 1 && (
-            <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: "16px", alignItems: "center", borderTop: "1px solid var(--color-deep-charcoal)", paddingTop: "32px" }}>
               <button
                 disabled={page === 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="btn btn-secondary btn-sm"
-                style={{ opacity: page === 1 ? 0.4 : 1 }}
+                className="btn btn-secondary"
+                style={{ opacity: page === 1 ? 0.4 : 1, padding: "8px 24px" }}
               >
-                ← Prev
+                Previous
               </button>
-              <span style={{ fontSize: "0.875rem", color: "var(--text-secondary)", padding: "0 0.5rem" }}>
+              <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
                 Page {page} of {result!.totalPages}
               </span>
               <button
                 disabled={!result!.hasMore}
                 onClick={() => setPage((p) => p + 1)}
-                className="btn btn-secondary btn-sm"
-                style={{ opacity: !result!.hasMore ? 0.4 : 1 }}
+                className="btn btn-secondary"
+                style={{ opacity: !result!.hasMore ? 0.4 : 1, padding: "8px 24px" }}
               >
-                Next →
+                Next Page
               </button>
             </div>
           )}
@@ -247,14 +245,15 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
 
   return (
     <Link href={`/vendor/${vendor.slug}`} style={{ textDecoration: "none" }}>
-      <div className="card card-glow" style={{ overflow: "hidden", cursor: "pointer" }}>
-        {/* Image */}
+      <div className="card" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        {/* Image / Typographic Placeholder */}
         <div
           style={{
-            height: 160,
-            background: "var(--surface-subtle)",
+            height: "240px",
+            borderBottom: "1px solid var(--color-deep-charcoal)",
             position: "relative",
             overflow: "hidden",
+            background: vendor.primaryImage ? "var(--color-surface-dim)" : "var(--color-chai-cream)",
           }}
         >
           {vendor.primaryImage ? (
@@ -262,8 +261,9 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
               src={vendor.primaryImage}
               alt={vendor.name}
               fill
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
               sizes="(max-width: 640px) 100vw, 300px"
+              className="hover:scale-105"
             />
           ) : (
             <div
@@ -274,84 +274,77 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "0.5rem",
+                padding: "24px",
+                textAlign: "center",
               }}
             >
-              <div style={{ fontSize: "3rem" }}>{SPECIALITY_EMOJIS[vendor.speciality] ?? "🍴"}</div>
+              <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-paper-ivory)", opacity: 0.1, lineHeight: 1 }}>
+                {vendor.name.charAt(0).toUpperCase()}
+              </div>
             </div>
           )}
-          {vendor.isFeatured && (
-            <div
-              style={{
-                position: "absolute",
-                top: 8,
-                left: 8,
-                background: "oklch(0.70 0.19 55 / 0.9)",
-                color: "#fff",
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                padding: "0.2rem 0.5rem",
-                borderRadius: 99,
-              }}
-            >
-              ⭐ Featured
-            </div>
-          )}
-          {vendor.isVerified && (
-            <div
-              style={{
-                position: "absolute",
-                top: vendor.isFeatured ? 32 : 8,
-                left: 8,
-                background: "oklch(0.60 0.15 155 / 0.9)",
-                color: "#fff",
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                padding: "0.2rem 0.5rem",
-                borderRadius: 99,
-              }}
-            >
-              ✓ Verified
-            </div>
-          )}
+          
+          <div style={{ position: "absolute", top: 16, left: 16, display: "flex", flexDirection: "column", gap: "8px" }}>
+            {vendor.isFeatured && (
+              <div
+                className="label-caps"
+                style={{
+                  background: "var(--color-deep-charcoal)",
+                  color: "var(--color-paper-ivory)",
+                  padding: "4px 8px",
+                  border: "1px solid var(--color-deep-charcoal)",
+                }}
+              >
+                Featured
+              </div>
+            )}
+            {vendor.isVerified && (
+              <div
+                className="label-caps"
+                style={{
+                  background: "var(--color-law-garden-green)",
+                  color: "white",
+                  padding: "4px 8px",
+                  border: "1px solid var(--color-law-garden-green)",
+                }}
+              >
+                Verified
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Body */}
-        <div style={{ padding: "1rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.375rem" }}>
+        {/* Content */}
+        <div style={{ padding: "24px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
             <div
+              className="headline-sm"
               style={{
-                fontWeight: 600,
-                fontSize: "0.9375rem",
-                color: "var(--text-primary)",
-                flex: 1,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                fontSize: "22px",
+                lineHeight: 1.2,
+                color: "var(--color-deep-charcoal)",
               }}
             >
               {vendor.name}
             </div>
             {avg > 0 && (
-              <div style={{ display: "flex", alignItems: "center", gap: "0.2rem", flexShrink: 0 }}>
-                <span style={{ color: "var(--gold)" }}>★</span>
-                <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "var(--gold)" }}>
-                  {avg.toFixed(1)}
-                </span>
+              <div className="label-caps" style={{ color: "var(--color-street-saffron)", minWidth: "40px", textAlign: "right" }}>
+                ★ {avg.toFixed(1)}
               </div>
             )}
           </div>
 
-          <div style={{ fontSize: "0.8125rem", color: "var(--text-secondary)", marginBottom: "0.75rem" }}>
-            {SPECIALITY_EMOJIS[vendor.speciality] ?? "🍴"} {vendor.speciality}
+          <div className="body-md" style={{ color: "var(--color-deep-charcoal)", marginBottom: "4px" }}>
+            {vendor.speciality}
+          </div>
+          
+          <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px" }}>
+            📍 {vendor.locality}
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="badge badge-subtle" style={{ fontSize: "0.6875rem" }}>
-              📍 {vendor.locality}
-            </span>
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-              {vendor.ratingCount > 0 ? `${vendor.ratingCount} rating${vendor.ratingCount !== 1 ? "s" : ""}` : "No ratings yet"}
+          <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
+            <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
+              {vendor.isFeatured ? "Editorial Pick" : vendor.isVerified ? "Verified Vendor" : vendor.ratingCount === 0 ? "New Addition" : vendor.ratingCount >= 5 && avg >= 4.5 ? "Community Favourite" : pluralize(vendor.ratingCount, "Community Log")}
             </span>
           </div>
         </div>
@@ -367,17 +360,21 @@ function SkeletonGrid() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-        gap: "1rem",
+        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+        gap: "24px",
       }}
     >
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="card" style={{ overflow: "hidden" }}>
-          <div className="skeleton" style={{ height: 160 }} />
-          <div style={{ padding: "1rem" }}>
-            <div className="skeleton" style={{ height: 18, width: "70%", marginBottom: "0.5rem" }} />
-            <div className="skeleton" style={{ height: 14, width: "50%", marginBottom: "0.75rem" }} />
-            <div className="skeleton" style={{ height: 24, width: 80, borderRadius: 99 }} />
+        <div key={i} style={{ border: "1px solid var(--color-deep-charcoal)", background: "var(--color-paper-ivory)" }}>
+          <div style={{ height: "240px", background: "var(--color-surface-dim)", borderBottom: "1px solid var(--color-deep-charcoal)" }} />
+          <div style={{ padding: "24px" }}>
+            <div style={{ height: "24px", width: "70%", background: "var(--color-surface-dim)", marginBottom: "16px" }} />
+            <div style={{ height: "16px", width: "40%", background: "var(--color-surface-dim)", marginBottom: "24px" }} />
+            <div style={{ height: "1px", background: "var(--color-deep-charcoal)", opacity: 0.1, marginBottom: "16px" }} />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ height: "14px", width: "60px", background: "var(--color-surface-dim)" }} />
+              <div style={{ height: "14px", width: "40px", background: "var(--color-surface-dim)" }} />
+            </div>
           </div>
         </div>
       ))}
@@ -392,19 +389,20 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
     <div
       style={{
         textAlign: "center",
-        padding: "5rem 2rem",
-        color: "var(--text-muted)",
+        padding: "80px 32px",
+        border: "1px solid var(--color-deep-charcoal)",
+        background: "var(--color-paper-ivory)",
       }}
     >
-      <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🔍</div>
-      <h3 style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
-        No vendors found
+      <div style={{ fontSize: "64px", marginBottom: "24px" }}>🔍</div>
+      <h3 className="headline-md" style={{ marginBottom: "16px" }}>
+        No results found.
       </h3>
-      <p style={{ fontSize: "0.9375rem", marginBottom: "1.5rem" }}>
-        Try adjusting your filters, or be the first to add a vendor!
+      <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", maxWidth: "400px", margin: "0 auto 32px" }}>
+        We couldn't find any vendors matching your criteria. Be the first to add one to the directory!
       </p>
-      <button onClick={onAdd} className="btn btn-primary">
-        ➕ Add a Vendor
+      <button onClick={onAdd} className="btn btn-primary btn-lg">
+        Submit a Vendor
       </button>
     </div>
   );

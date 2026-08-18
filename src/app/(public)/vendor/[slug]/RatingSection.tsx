@@ -50,28 +50,26 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
   if (submitted) {
     return (
       <div
-        className="card"
-        style={{ padding: "1.5rem", textAlign: "center" }}
+        style={{ padding: "32px", textAlign: "center", border: "1px solid var(--color-deep-charcoal)", background: "var(--color-chai-cream)" }}
       >
-        <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🙏</div>
-        <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.25rem" }}>
-          Thank you for rating!
+        <div className="headline-sm" style={{ marginBottom: "8px", color: "var(--color-deep-charcoal)" }}>
+          Thank you for rating.
         </div>
-        <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-          Your review helps the community discover great food.
+        <div className="body-md" style={{ color: "var(--color-on-surface-variant)" }}>
+          Your log has been recorded into the directory.
         </div>
       </div>
     );
   }
 
   return (
-    <div className="card" style={{ padding: "1.5rem" }}>
-      <h3 style={{ fontSize: "1rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "1rem" }}>
-        Rate {vendorName}
+    <div style={{ padding: "32px", border: "1px solid var(--color-deep-charcoal)", background: "var(--color-chai-cream)" }}>
+      <h3 className="headline-sm" style={{ marginBottom: "24px" }}>
+        Add your Log
       </h3>
 
       {/* Stars */}
-      <div style={{ display: "flex", gap: "0.25rem", marginBottom: "0.5rem" }}>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
         {[1, 2, 3, 4, 5].map((s) => (
           <button
             key={s}
@@ -80,16 +78,15 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
             onMouseLeave={() => setHover(0)}
             style={{
               background: "none",
-              border: "none",
+              border: "1px solid",
+              borderColor: (hover || stars) >= s ? "var(--color-deep-charcoal)" : "var(--color-outline-variant)",
+              backgroundColor: (hover || stars) >= s ? "var(--color-paper-ivory)" : "transparent",
               cursor: "pointer",
-              fontSize: "2.25rem",
-              color: (hover || stars) >= s ? "var(--gold)" : "var(--surface-subtle)",
-              transition: "color 0.1s ease, transform 0.1s ease",
-              transform: (hover || stars) >= s ? "scale(1.15)" : "scale(1)",
-              padding: "0.25rem",
-              lineHeight: 1,
-              minWidth: 48,
-              minHeight: 48,
+              fontSize: "24px",
+              color: (hover || stars) >= s ? "var(--color-street-saffron)" : "var(--color-surface-dim)",
+              transition: "all 0.1s ease",
+              width: "48px",
+              height: "48px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -101,7 +98,7 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
         ))}
       </div>
       {(hover || stars) > 0 && (
-        <div style={{ fontSize: "0.8125rem", color: "var(--brand-light)", fontWeight: 500, marginBottom: "0.75rem" }}>
+        <div className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "24px" }}>
           {STAR_LABELS[hover || stars]}
         </div>
       )}
@@ -110,13 +107,13 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
       <textarea
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        placeholder="Tell others what's great (optional)"
-        rows={3}
+        placeholder="Write your review here... (optional)"
+        rows={4}
         maxLength={500}
         className="input"
-        style={{ resize: "none", marginBottom: "0.75rem" }}
+        style={{ resize: "none", marginBottom: "12px", background: "var(--color-paper-ivory)", fontSize: "16px", padding: "16px" }}
       />
-      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.75rem", textAlign: "right" }}>
+      <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px", textAlign: "right" }}>
         {comment.length}/500
       </div>
 
@@ -124,11 +121,11 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
         onClick={handleSubmit}
         disabled={stars === 0 || submitting}
         className="btn btn-primary"
-        style={{ width: "100%", opacity: stars === 0 || submitting ? 0.5 : 1 }}
+        style={{ width: "100%", opacity: stars === 0 || submitting ? 0.5 : 1, padding: "16px" }}
       >
-        {submitting ? "Submitting..." : "Submit Rating"}
+        {submitting ? "Submitting..." : "Publish Log"}
       </button>
-      <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.75rem", textAlign: "center" }}>
+      <p className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginTop: "16px", textAlign: "center" }}>
         Anonymous rating · one per vendor
       </p>
     </div>

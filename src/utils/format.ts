@@ -52,3 +52,8 @@ export function getInitials(name: string): string {
     .map((w) => w[0]?.toUpperCase() ?? "")
     .join("");
 }
+
+/** Pluralize a word based on count */
+export function pluralize(count: number, singular: string, plural: string = singular + "s"): string {
+  return `${count} ${count === 1 ? singular : plural}`;
+}

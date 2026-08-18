@@ -4,13 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, ShoppingBag } from "lucide-react";
-import { SITE_CONFIG } from "@/constants";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/browse", label: "Browse" },
   { href: "/rankings", label: "Rankings" },
-  { href: "/add", label: "+ Add Vendor" },
+  { href: "/add", label: "Add Vendor" },
 ];
 
 export default function Header() {
@@ -23,9 +22,8 @@ export default function Header() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        borderBottom: "1px solid var(--border-subtle)",
-        backdropFilter: "blur(16px)",
-        background: "rgba(15,15,15,0.85)",
+        borderBottom: "1px solid var(--border-default)",
+        background: "var(--color-surface)",
       }}
     >
       <div className="container-page">
@@ -34,7 +32,7 @@ export default function Header() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            height: "64px",
+            height: "80px", // slightly taller for editorial feel
           }}
         >
           {/* Logo */}
@@ -43,31 +41,30 @@ export default function Header() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.75rem",
               textDecoration: "none",
             }}
           >
             <div
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                background: "linear-gradient(135deg, oklch(0.68 0.20 42), oklch(0.76 0.17 55))",
+                width: 40,
+                height: 40,
+                background: "var(--color-deep-charcoal)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <ShoppingBag size={18} color="#fff" />
+              <ShoppingBag size={20} color="var(--color-paper-ivory)" />
             </div>
             <div>
               <div
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "1rem",
+                  fontSize: "1.25rem",
                   fontWeight: 700,
-                  color: "var(--text-primary)",
+                  color: "var(--color-deep-charcoal)",
                   letterSpacing: "-0.02em",
                   lineHeight: 1.1,
                 }}
@@ -75,12 +72,11 @@ export default function Header() {
                 Ahmedabad
               </div>
               <div
+                className="label-caps"
                 style={{
-                  fontSize: "0.65rem",
-                  fontWeight: 500,
-                  color: "var(--text-brand)",
-                  letterSpacing: "0.05em",
-                  textTransform: "uppercase",
+                  fontSize: "0.6rem",
+                  color: "var(--color-street-saffron)",
+                  marginTop: "2px",
                 }}
               >
                 Street Eats
@@ -93,7 +89,7 @@ export default function Header() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "0.25rem",
+              gap: "0.5rem",
             }}
             className="hidden md:flex"
           >
@@ -103,43 +99,25 @@ export default function Header() {
                   ? pathname === "/"
                   : pathname.startsWith(link.href);
               const isAdd = link.href === "/add";
+              
+              if (isAdd) {
+                return (
+                  <Link key={link.href} href={link.href} className="btn btn-primary" style={{ marginLeft: "0.5rem" }}>
+                    {link.label}
+                  </Link>
+                );
+              }
+              
               return (
                 <Link
                   key={link.href}
                   href={link.href}
+                  className={`transition-colors duration-200 ${isActive ? "text-[var(--color-deep-charcoal)] font-semibold border-b-2 border-[var(--color-deep-charcoal)]" : "text-[var(--color-on-surface-variant)] border-b-2 border-transparent hover:text-[var(--color-deep-charcoal)]"}`}
                   style={{
-                    padding: "0.375rem 0.875rem",
-                    borderRadius: 8,
+                    padding: "0.5rem 1rem",
                     fontSize: "0.875rem",
-                    fontWeight: 500,
                     textDecoration: "none",
-                    transition: "all 0.15s ease",
-                    ...(isAdd
-                      ? {
-                          background:
-                            "linear-gradient(135deg, oklch(0.68 0.20 42), oklch(0.76 0.17 55))",
-                          color: "#fff",
-                        }
-                      : isActive
-                      ? {
-                          background: "oklch(0.70 0.19 55 / 0.12)",
-                          color: "var(--brand-light)",
-                        }
-                      : {
-                          color: "var(--text-secondary)",
-                        }),
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isAdd && !isActive) {
-                      (e.target as HTMLElement).style.color = "var(--text-primary)";
-                      (e.target as HTMLElement).style.background = "var(--surface-overlay)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isAdd && !isActive) {
-                      (e.target as HTMLElement).style.color = "var(--text-secondary)";
-                      (e.target as HTMLElement).style.background = "transparent";
-                    }
+                    fontFamily: "var(--font-sans)",
                   }}
                 >
                   {link.label}
@@ -153,16 +131,15 @@ export default function Header() {
             className="flex md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             style={{
-              background: "var(--surface-overlay)",
+              background: "transparent",
               border: "1px solid var(--border-default)",
-              borderRadius: 8,
               padding: "0.375rem",
-              color: "var(--text-primary)",
+              color: "var(--color-deep-charcoal)",
               cursor: "pointer",
             }}
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
@@ -171,9 +148,9 @@ export default function Header() {
       {mobileOpen && (
         <div
           style={{
-            borderTop: "1px solid var(--border-subtle)",
-            padding: "0.75rem 1rem",
-            background: "var(--surface-base)",
+            borderTop: "1px solid var(--border-default)",
+            padding: "1rem",
+            background: "var(--color-paper-ivory)",
           }}
           className="md:hidden"
         >
@@ -183,6 +160,21 @@ export default function Header() {
                 ? pathname === "/"
                 : pathname.startsWith(link.href);
             const isAdd = link.href === "/add";
+            
+            if (isAdd) {
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="btn btn-primary"
+                  style={{ display: "flex", width: "100%", marginTop: "0.5rem" }}
+                >
+                  {link.label}
+                </Link>
+              );
+            }
+            
             return (
               <Link
                 key={link.href}
@@ -190,27 +182,15 @@ export default function Header() {
                 onClick={() => setMobileOpen(false)}
                 style={{
                   display: "block",
-                  padding: "0.625rem 0.75rem",
-                  borderRadius: 8,
-                  fontSize: "0.9375rem",
+                  padding: "0.75rem",
+                  fontSize: "1rem",
                   fontWeight: 500,
                   textDecoration: "none",
+                  fontFamily: "var(--font-sans)",
                   marginBottom: "0.25rem",
-                  ...(isAdd
-                    ? {
-                        background:
-                          "linear-gradient(135deg, oklch(0.68 0.20 42), oklch(0.76 0.17 55))",
-                        color: "#fff",
-                        textAlign: "center" as const,
-                      }
-                    : isActive
-                    ? {
-                        background: "oklch(0.70 0.19 55 / 0.12)",
-                        color: "var(--brand-light)",
-                      }
-                    : {
-                        color: "var(--text-secondary)",
-                      }),
+                  borderLeft: isActive ? "3px solid var(--color-deep-charcoal)" : "3px solid transparent",
+                  background: isActive ? "var(--color-chai-cream)" : "transparent",
+                  color: isActive ? "var(--color-deep-charcoal)" : "var(--color-on-surface-variant)",
                 }}
               >
                 {link.label}

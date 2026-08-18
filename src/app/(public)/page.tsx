@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { Search } from "lucide-react";
 import {
   getFeaturedVendors,
   getTopRatedVendors,
   getRecentVendors,
   getSiteStats,
 } from "@/services/vendor.server";
-import { SPECIALITIES, SPECIALITY_EMOJIS, SITE_CONFIG } from "@/constants";
-import { formatRating } from "@/utils/format";
+import { SPECIALITIES, LOCALITIES, SITE_CONFIG } from "@/constants";
+import { formatRating, pluralize } from "@/utils/format";
 
 export const metadata: Metadata = {
-  title: `${SITE_CONFIG.name} — Discover Ahmedabad's Best Street Food`,
+  title: `${SITE_CONFIG.name} — Ahmedabad's Community Food Guide`,
   description: SITE_CONFIG.description,
 };
 
@@ -20,188 +21,139 @@ export default async function HomePage() {
     getSiteStats(),
     getTopRatedVendors(3),
     getFeaturedVendors(),
-    getRecentVendors(4),
+    getRecentVendors(8), // Fetch more for dense list
   ]);
 
-  const popularCategories = SPECIALITIES.slice(0, 12);
+  const popularCategories = SPECIALITIES.slice(0, 8);
+  const popularLocalities = LOCALITIES.slice(0, 8);
 
   return (
     <div>
       {/* ===================== HERO ===================== */}
-      <section className="gradient-hero" style={{ padding: "4rem 0 5rem", textAlign: "center" }}>
+      <section style={{ paddingTop: "120px", paddingBottom: "120px" }}>
         <div className="container-page">
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.375rem 1rem",
-              background: "oklch(0.70 0.19 55 / 0.12)",
-              border: "1px solid oklch(0.70 0.19 55 / 0.25)",
-              borderRadius: 99,
-              fontSize: "0.8125rem",
-              color: "var(--brand-light)",
-              fontWeight: 500,
-              marginBottom: "1.5rem",
-            }}
-          >
-            🛒 Community-powered food discovery
-          </div>
-
-          <h1
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(2.25rem, 6vw, 3.75rem)",
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
-              lineHeight: 1.05,
-              color: "var(--text-primary)",
-              marginBottom: "1.25rem",
-            }}
-          >
-            Discover Ahmedabad's{" "}
-            <span className="text-gradient">Best Street Food</span>
-          </h1>
-
-          <p
-            style={{
-              fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
-              color: "var(--text-secondary)",
-              maxWidth: 560,
-              margin: "0 auto 2.5rem",
-              lineHeight: 1.65,
-            }}
-          >
-            Rate vendors, explore localities, and help your community find the most delicious street eats across {stats.totalLocalities} neighbourhoods.
-          </p>
-
-          <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/browse" className="btn btn-primary btn-lg" style={{ flex: "1 1 auto", maxWidth: 220 }}>
-              🔍 Browse Vendors
-            </Link>
-            <Link href="/add" className="btn btn-secondary btn-lg" style={{ flex: "1 1 auto", maxWidth: 220 }}>
-              ➕ Add a Vendor
-            </Link>
-          </div>
-
-          {/* Stats */}
-          <div
-            style={{
-              display: "flex",
-              gap: "2.5rem",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              marginTop: "3.5rem",
-            }}
-          >
-            {[
-              { val: stats.totalVendors, label: "Vendors Listed" },
-              { val: stats.totalLocalities, label: "Localities Covered" },
-              { val: stats.totalRatings, label: "Community Ratings" },
-            ].map(({ val, label }) => (
-              <div key={label} style={{ textAlign: "center" }}>
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "2rem",
-                    fontWeight: 800,
-                    color: "var(--text-primary)",
-                  }}
-                >
-                  {val.toLocaleString("en-IN")}
-                </div>
-                <div style={{ fontSize: "0.8125rem", color: "var(--text-secondary)", marginTop: 2 }}>
-                  {label}
-                </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "64px", alignItems: "center" }}>
+            
+            {/* Left Content */}
+            <div style={{ paddingRight: "32px" }}>
+              <div
+                className="label-caps"
+                style={{
+                  color: "var(--color-street-saffron)",
+                  marginBottom: "32px",
+                }}
+              >
+                The City's Directory
               </div>
-            ))}
+
+              <h1 className="display-xl" style={{ marginBottom: "24px" }}>
+                Find your next <br />
+                <span style={{ color: "var(--color-on-surface-variant)", fontStyle: "italic" }}>favourite spot.</span>
+              </h1>
+
+              <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", marginBottom: "48px", maxWidth: "480px" }}>
+                Ahmedabad's street food, documented and rated by the people who live here.
+              </p>
+
+              {/* Discovery Search */}
+              <form action="/browse" method="GET" style={{ display: "flex", gap: "8px", maxWidth: "480px", marginBottom: "32px" }}>
+                <div style={{ position: "relative", flexGrow: 1 }}>
+                  <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)" }} />
+                  <input 
+                    name="search" 
+                    placeholder="What are you craving?" 
+                    className="input" 
+                    style={{ paddingLeft: "48px", height: "56px", fontSize: "16px", background: "var(--color-paper-ivory)" }}
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary" style={{ height: "56px", padding: "0 32px" }}>
+                  Search
+                </button>
+              </form>
+              
+              <Link href="/add" className="label-caps hover:text-[var(--color-street-saffron)] transition-colors duration-200" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none" }}>
+                + Or submit a vendor
+              </Link>
+            </div>
+
+            {/* Right Asymmetric Grid (Stats) */}
+            {(stats.totalVendors > 5 || stats.totalRatings > 5) && (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                {stats.totalVendors > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "48px" }}>
+                    <div style={{ background: "var(--color-chai-cream)", padding: "32px", height: "240px", border: "1px solid var(--color-deep-charcoal)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+                      <div className="display-xl" style={{ fontSize: "48px", lineHeight: 1 }}>{stats.totalVendors}</div>
+                      <div className="label-caps" style={{ marginTop: "16px" }}>Vendors Documented</div>
+                    </div>
+                  </div>
+                )}
+                {stats.totalRatings > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ background: "var(--color-street-saffron)", padding: "32px", height: "280px", border: "1px solid var(--color-deep-charcoal)", display: "flex", flexDirection: "column", justifyContent: "flex-end", color: "white" }}>
+                      <div className="display-xl" style={{ fontSize: "48px", lineHeight: 1, color: "white" }}>{stats.totalRatings}</div>
+                      <div className="label-caps" style={{ color: "white", marginTop: "16px" }}>{pluralize(stats.totalRatings, "Community Log")}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      <div className="container-page" style={{ paddingTop: "3rem", paddingBottom: "4rem" }}>
+      <div className="section-divider" />
 
+      <div className="container-page">
         {/* ===================== TOP RATED ===================== */}
         {topVendors.length > 0 && (
-          <section style={{ marginBottom: "4rem" }}>
-            <SectionHeader title="🏆 Top Rated Vendors" subtitle="Highest community-rated picks right now" href="/browse?sort=rating" />
+          <section style={{ marginBottom: "120px" }}>
+            <SectionHeader title="Top Rated." subtitle="The highest community-rated picks right now." href="/browse?sort=rating" />
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                gap: "1rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
               }}
             >
               {topVendors.map((vendor, i) => {
-                const medals = ["🥇", "🥈", "🥉"];
-                const medalColors = ["var(--gold)", "#C0C0C0", "#CD7F32"];
+                const avg = vendor.ratingCount > 0 ? vendor.ratingSum / vendor.ratingCount : 0;
                 return (
                   <Link
                     key={vendor.id}
                     href={`/vendor/${vendor.slug}`}
+                    className="group"
                     style={{ textDecoration: "none" }}
                   >
                     <div
-                      className="card card-glow"
                       style={{
-                        padding: "1.25rem 1.5rem",
-                        position: "relative",
-                        overflow: "hidden",
-                        cursor: "pointer",
-                        border: i === 0 ? "1px solid oklch(0.82 0.16 82 / 0.4)" : undefined,
+                        padding: "32px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "32px",
+                        border: "1px solid var(--color-deep-charcoal)",
+                        background: "var(--color-paper-ivory)",
+                        transition: "background 0.2s ease",
                       }}
+                      className="hover:bg-[var(--color-chai-cream)]"
                     >
-                      {i === 0 && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: 2,
-                            background: "linear-gradient(90deg, var(--gold), oklch(0.70 0.19 55))",
-                          }}
-                        />
-                      )}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
-                        <div style={{ fontSize: "1.75rem", lineHeight: 1 }}>{medals[i]}</div>
-                        <div
-                          style={{
-                            background: "oklch(0.82 0.16 82 / 0.1)",
-                            border: "1px solid oklch(0.82 0.16 82 / 0.25)",
-                            borderRadius: 8,
-                            padding: "0.25rem 0.625rem",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.25rem",
-                            fontSize: "0.9375rem",
-                            fontWeight: 700,
-                            color: medalColors[i],
-                          }}
-                        >
-                          ★ {formatRating(vendor.ratingSum, vendor.ratingCount)}
+                      <div className="display-xl" style={{ fontSize: "48px", lineHeight: 1, color: "var(--color-street-saffron)", minWidth: "64px" }}>
+                        0{i + 1}
+                      </div>
+                      <div style={{ flexGrow: 1 }}>
+                        <div className="headline-md" style={{ marginBottom: "4px", color: "var(--color-deep-charcoal)" }}>
+                          {vendor.name}
+                        </div>
+                        <div className="body-md" style={{ color: "var(--color-on-surface-variant)" }}>
+                          {vendor.speciality} · {vendor.locality}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          fontSize: "1rem",
-                          color: "var(--text-primary)",
-                          marginBottom: "0.25rem",
-                        }}
-                      >
-                        {vendor.name}
-                      </div>
-                      <div style={{ fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
-                        {SPECIALITY_EMOJIS[vendor.speciality] ?? "🍴"} {vendor.speciality}
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", marginTop: "0.5rem" }}>
-                        <span className="badge badge-subtle" style={{ fontSize: "0.75rem" }}>
-                          📍 {vendor.locality}
-                        </span>
-                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                          {vendor.ratingCount} ratings
-                        </span>
+                      <div style={{ textAlign: "right", minWidth: "100px" }}>
+                        <div className="headline-sm" style={{ color: "var(--color-deep-charcoal)", marginBottom: "4px" }}>
+                          ★ {formatRating(vendor.ratingSum, vendor.ratingCount)}
+                        </div>
+                        <div className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
+                          {pluralize(vendor.ratingCount, "rating")}
+                        </div>
                       </div>
                     </div>
                   </Link>
@@ -211,82 +163,99 @@ export default async function HomePage() {
           </section>
         )}
 
+        {/* ===================== DISCOVERY (CATEGORIES + LOCALITIES) ===================== */}
+        <section style={{ marginBottom: "120px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "64px" }}>
+            {/* Food Discovery */}
+            <div>
+              <SectionHeader title="By Food." subtitle="What are you craving?" href="/browse" hideLink />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--color-deep-charcoal)", border: "1px solid var(--color-deep-charcoal)" }}>
+                {popularCategories.map((spec) => (
+                  <Link
+                    key={spec}
+                    href={`/browse?speciality=${encodeURIComponent(spec)}`}
+                    className="group"
+                    style={{ textDecoration: "none", display: "block" }}
+                  >
+                    <div
+                      className="bg-[var(--color-paper-ivory)] group-hover:bg-[var(--color-chai-cream)] transition-all duration-200"
+                      style={{ padding: "24px 16px", height: "100%" }}
+                    >
+                      <div
+                        className="headline-sm text-[var(--color-deep-charcoal)] group-hover:text-[var(--color-street-saffron)] transition-colors duration-200"
+                        style={{ fontSize: "18px", lineHeight: 1.2 }}
+                      >
+                        {spec}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Locality Discovery */}
+            <div>
+              <SectionHeader title="By Locality." subtitle="Explore neighbourhoods." href="/browse" hideLink />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--color-deep-charcoal)", border: "1px solid var(--color-deep-charcoal)" }}>
+                {popularLocalities.map((loc) => (
+                  <Link
+                    key={loc}
+                    href={`/browse?locality=${encodeURIComponent(loc)}`}
+                    className="group"
+                    style={{ textDecoration: "none", display: "block" }}
+                  >
+                    <div
+                      className="bg-[var(--color-paper-ivory)] group-hover:bg-[var(--color-chai-cream)] transition-all duration-200"
+                      style={{ padding: "24px 16px", height: "100%" }}
+                    >
+                      <div
+                        className="headline-sm text-[var(--color-deep-charcoal)] group-hover:text-[var(--color-street-saffron)] transition-colors duration-200"
+                        style={{ fontSize: "18px", lineHeight: 1.2 }}
+                      >
+                        {loc}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ===================== FEATURED ===================== */}
         {featuredVendors.length > 0 && (
-          <section style={{ marginBottom: "4rem" }}>
-            <SectionHeader title="⭐ Featured Vendors" subtitle="Hand-picked community favourites" href="/browse" />
+          <section style={{ marginBottom: "120px" }}>
+            <SectionHeader title="Editorial Picks." subtitle="Hand-selected by our team." href="/browse" />
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-                gap: "1rem",
+                gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
+                gap: "32px",
               }}
             >
               {featuredVendors.map((vendor) => (
-                <VendorMiniCard key={vendor.id} vendor={vendor} />
+                <VendorCard key={vendor.id} vendor={vendor} isEditorial />
               ))}
             </div>
           </section>
         )}
 
-        {/* ===================== CATEGORIES ===================== */}
-        <section style={{ marginBottom: "4rem" }}>
-          <SectionHeader title="🍽️ Browse by Category" subtitle="What are you craving today?" href="/browse" />
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-              gap: "0.75rem",
-            }}
-          >
-            {popularCategories.map((spec) => (
-              <Link
-                key={spec}
-                href={`/browse?speciality=${encodeURIComponent(spec)}`}
-                style={{ textDecoration: "none" }}
-              >
-                <div
-                  className="card hover:border-[oklch(0.70_0.19_55/0.4)] hover:bg-[oklch(0.70_0.19_55/0.06)]"
-                  style={{
-                    padding: "1rem",
-                    textAlign: "center",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <div style={{ fontSize: "1.75rem", marginBottom: "0.5rem" }}>
-                    {SPECIALITY_EMOJIS[spec] ?? "🍴"}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.8125rem",
-                      fontWeight: 500,
-                      color: "var(--text-secondary)",
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {spec}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
         {/* ===================== RECENTLY ADDED ===================== */}
         {recentVendors.length > 0 && (
-          <section style={{ marginBottom: "4rem" }}>
-            <SectionHeader title="🆕 Recently Added" subtitle="New vendors the community is excited about" href="/browse?sort=newest" />
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-                gap: "1rem",
-              }}
-            >
-              {recentVendors.map((vendor) => (
-                <VendorMiniCard key={vendor.id} vendor={vendor} />
-              ))}
+          <section style={{ marginBottom: "120px", background: "var(--color-chai-cream)", margin: "0 -20px 120px -20px", padding: "80px 20px" }}>
+            <div className="container-page" style={{ padding: 0 }}>
+              <SectionHeader title="Just In." subtitle="Fresh discoveries from the community." href="/browse?sort=newest" />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                  gap: "24px",
+                }}
+              >
+                {recentVendors.map((vendor) => (
+                  <VendorCard key={vendor.id} vendor={vendor} isCompact />
+                ))}
+              </div>
             </div>
           </section>
         )}
@@ -294,43 +263,29 @@ export default async function HomePage() {
         {/* ===================== CTA ===================== */}
         <section
           style={{
-            borderRadius: 20,
-            padding: "3rem 2rem",
-            textAlign: "center",
-            background: "linear-gradient(135deg, oklch(0.68 0.20 42 / 0.12), oklch(0.82 0.16 82 / 0.08))",
-            border: "1px solid oklch(0.70 0.19 55 / 0.2)",
+            padding: "80px 48px",
+            background: "var(--color-deep-charcoal)",
+            color: "var(--color-paper-ivory)",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "48px",
+            alignItems: "center",
           }}
         >
-          <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>🛺</div>
-          <h2
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "1.75rem",
-              fontWeight: 700,
-              color: "var(--text-primary)",
-              marginBottom: "0.75rem",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Know a Great Vendor?
-          </h2>
-          <p
-            style={{
-              color: "var(--text-secondary)",
-              marginBottom: "1.75rem",
-              fontSize: "1rem",
-              maxWidth: 440,
-              margin: "0 auto 1.75rem",
-              lineHeight: 1.6,
-            }}
-          >
-            Help the community discover amazing local street food. No account needed — just share the love!
-          </p>
-          <Link href="/add" className="btn btn-primary btn-lg">
-            ➕ Add a Vendor for Free
-          </Link>
+          <div>
+            <h2 className="display-xl" style={{ color: "var(--color-paper-ivory)", marginBottom: "16px", fontSize: "56px" }}>
+              Add your <br/><span style={{ color: "var(--color-street-saffron)" }}>Favourite</span>
+            </h2>
+          </div>
+          <div>
+            <p className="body-lg" style={{ marginBottom: "40px", color: "var(--color-surface-dim)", maxWidth: "400px" }}>
+              Is your favourite spot missing? Help others discover it by adding it to the directory.
+            </p>
+            <Link href="/add" className="btn btn-lg" style={{ background: "var(--color-street-saffron)", color: "white", borderRadius: 0 }}>
+              Submit a Vendor
+            </Link>
+          </div>
         </section>
-
       </div>
     </div>
   );
@@ -342,10 +297,12 @@ function SectionHeader({
   title,
   subtitle,
   href,
+  hideLink = false,
 }: {
   title: string;
   subtitle: string;
   href: string;
+  hideLink?: boolean;
 }) {
   return (
     <div
@@ -353,43 +310,37 @@ function SectionHeader({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-end",
-        marginBottom: "1.25rem",
+        marginBottom: "48px",
+        paddingBottom: "16px",
+        borderBottom: "1px solid var(--color-deep-charcoal)",
         flexWrap: "wrap",
-        gap: "0.5rem",
+        gap: "16px",
       }}
     >
       <div>
-        <h2
+        <h2 className="headline-lg">{title}</h2>
+        <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", marginTop: "8px" }}>{subtitle}</p>
+      </div>
+      {!hideLink && (
+        <Link
+          href={href}
+          className="label-caps border border-[var(--color-deep-charcoal)] text-[var(--color-deep-charcoal)] hover:bg-[var(--color-deep-charcoal)] hover:text-[var(--color-paper-ivory)] transition-all duration-200"
           style={{
-            fontSize: "1.375rem",
-            fontWeight: 700,
-            color: "var(--text-primary)",
-            letterSpacing: "-0.02em",
-            marginBottom: "0.25rem",
+            textDecoration: "none",
+            padding: "10px 20px",
           }}
         >
-          {title}
-        </h2>
-        <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>{subtitle}</p>
-      </div>
-      <Link
-        href={href}
-        style={{
-          fontSize: "0.8125rem",
-          color: "var(--brand-light)",
-          textDecoration: "none",
-          fontWeight: 500,
-          flexShrink: 0,
-        }}
-      >
-        View all →
-      </Link>
+          View Directory
+        </Link>
+      )}
     </div>
   );
 }
 
-function VendorMiniCard({
+function VendorCard({
   vendor,
+  isEditorial = false,
+  isCompact = false,
 }: {
   vendor: {
     id: string;
@@ -400,105 +351,97 @@ function VendorMiniCard({
     ratingSum: number;
     ratingCount: number;
     isVerified: boolean;
+    isFeatured?: boolean;
     primaryImage?: string;
   };
+  isEditorial?: boolean;
+  isCompact?: boolean;
 }) {
   const avg = vendor.ratingCount > 0 ? vendor.ratingSum / vendor.ratingCount : 0;
+  
+  // "Why this place?" logic
+  let signal = null;
+  if (vendor.isFeatured) signal = "Editorial Pick";
+  else if (vendor.ratingCount >= 5 && avg >= 4.5) signal = "Community Favourite";
+  else if (vendor.ratingCount === 0) signal = "New Addition";
+  else if (vendor.isVerified) signal = "Verified Vendor";
 
   return (
     <Link href={`/vendor/${vendor.slug}`} style={{ textDecoration: "none" }}>
-      <div className="card card-glow" style={{ overflow: "hidden", cursor: "pointer" }}>
-        {/* Image */}
-        <div
-          style={{
-            height: 140,
-            background: "var(--surface-subtle)",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          {vendor.primaryImage ? (
-            <Image
-              src={vendor.primaryImage}
-              alt={vendor.name}
-              fill
-              style={{ objectFit: "cover", transition: "transform 0.3s ease" }}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
-            />
-          ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "3rem",
-              }}
-            >
-              {SPECIALITY_EMOJIS[vendor.speciality] ?? "🍴"}
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div style={{ padding: "0.875rem 1rem" }}>
+      <div className="card hover:border-[var(--color-street-saffron)] transition-colors duration-300" style={{ display: "flex", flexDirection: "column", height: "100%", background: "var(--color-paper-ivory)" }}>
+        {/* Image / Typographic Placeholder */}
+        {!isCompact && (
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: "0.375rem",
+              height: isEditorial ? "320px" : "200px",
+              borderBottom: "1px solid var(--color-deep-charcoal)",
+              position: "relative",
+              overflow: "hidden",
+              background: vendor.primaryImage ? "var(--color-surface-dim)" : "var(--color-deep-charcoal)",
             }}
           >
+            {vendor.primaryImage ? (
+              <Image
+                src={vendor.primaryImage}
+                alt={vendor.name}
+                fill
+                style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                className="hover:scale-105"
+              />
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "24px",
+                  textAlign: "center",
+                }}
+              >
+                <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-paper-ivory)", opacity: 0.1, lineHeight: 1 }}>
+                  {vendor.name.charAt(0).toUpperCase()}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Content */}
+        <div style={{ padding: "24px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
             <div
+              className="headline-sm"
               style={{
-                fontWeight: 600,
-                fontSize: "0.9375rem",
-                color: "var(--text-primary)",
-                flex: 1,
-                minWidth: 0,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                fontSize: "22px",
+                lineHeight: 1.2,
+                color: "var(--color-deep-charcoal)",
               }}
             >
               {vendor.name}
-              {vendor.isVerified && (
-                <span style={{ marginLeft: "0.25rem", color: "var(--jade)", fontSize: "0.75rem" }}>✓</span>
-              )}
             </div>
             {avg > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.2rem",
-                  flexShrink: 0,
-                  marginLeft: "0.5rem",
-                }}
-              >
-                <span style={{ color: "var(--gold)", fontSize: "0.875rem" }}>★</span>
-                <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--gold)" }}>
-                  {avg.toFixed(1)}
-                </span>
+              <div className="label-caps" style={{ color: "var(--color-street-saffron)", minWidth: "40px", textAlign: "right" }}>
+                ★ {avg.toFixed(1)}
               </div>
             )}
           </div>
 
-          <div style={{ fontSize: "0.8125rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
-            {SPECIALITY_EMOJIS[vendor.speciality] ?? "🍴"} {vendor.speciality}
+          <div className="body-md" style={{ color: "var(--color-deep-charcoal)", marginBottom: "4px" }}>
+            {vendor.speciality}
+          </div>
+          
+          <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px" }}>
+            📍 {vendor.locality}
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="badge badge-subtle" style={{ fontSize: "0.6875rem" }}>
-              📍 {vendor.locality}
+          {/* "Why this place?" Signal */}
+          <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
+            <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
+              {signal ? signal : pluralize(vendor.ratingCount, "Community Log")}
             </span>
-            {vendor.ratingCount > 0 && (
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                {vendor.ratingCount} rating{vendor.ratingCount !== 1 ? "s" : ""}
-              </span>
-            )}
           </div>
         </div>
       </div>

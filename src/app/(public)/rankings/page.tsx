@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getLocalityRankings } from "@/services/vendor.server";
-import { SPECIALITY_EMOJIS } from "@/constants";
+import { pluralize } from "@/utils/format";
 
 export const metadata: Metadata = {
   title: "Locality Rankings",
@@ -104,8 +104,8 @@ export default async function RankingsPage() {
                           {r.locality}
                         </h2>
                         <div style={{ fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
-                          {r.vendorCount} vendor{r.vendorCount !== 1 ? "s" : ""} ·{" "}
-                          {r.totalRatings} rating{r.totalRatings !== 1 ? "s" : ""}
+                          {pluralize(r.vendorCount, "vendor")} ·{" "}
+                          {pluralize(r.totalRatings, "rating")}
                         </div>
                       </div>
 
@@ -156,7 +156,7 @@ export default async function RankingsPage() {
                             }}
                             className="hover:border-[oklch(0.70_0.19_55/0.4)] hover:text-[var(--brand-light)]"
                           >
-                            {SPECIALITY_EMOJIS[v.speciality] ?? "🍴"} {v.name}
+                            {v.name}
                             {v.ratingCount > 0 && (
                               <span style={{ color: "var(--gold)" }}>
                                 ★ {(v.ratingSum / v.ratingCount).toFixed(1)}

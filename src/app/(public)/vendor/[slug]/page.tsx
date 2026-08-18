@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getVendorBySlug } from "@/services/vendor.server";
-import { SPECIALITY_EMOJIS, SITE_CONFIG } from "@/constants";
-import { formatRelative, formatDate } from "@/utils/format";
+import { SITE_CONFIG } from "@/constants";
+import { formatRelative, formatDate, pluralize } from "@/utils/format";
 import RatingSection from "./RatingSection";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -73,21 +73,21 @@ export default async function VendorDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="container-page" style={{ paddingTop: "2rem", paddingBottom: "5rem" }}>
+      <div className="container-page" style={{ paddingTop: "40px", paddingBottom: "120px" }}>
         {/* Breadcrumb */}
-        <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)", marginBottom: "1.5rem" }}>
-          <Link href="/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</Link>
-          {" / "}
-          <Link href="/browse" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Browse</Link>
-          {" / "}
-          <span style={{ color: "var(--text-secondary)" }}>{vendor.name}</span>
+        <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", paddingBottom: "16px", borderBottom: "1px solid var(--color-deep-charcoal)" }}>
+          <Link href="/" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none", transition: "color 0.2s" }} className="hover:text-[var(--color-deep-charcoal)]">Home</Link>
+          <span style={{ margin: "0 8px" }}>/</span>
+          <Link href="/browse" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none", transition: "color 0.2s" }} className="hover:text-[var(--color-deep-charcoal)]">Directory</Link>
+          <span style={{ margin: "0 8px" }}>/</span>
+          <span style={{ color: "var(--color-deep-charcoal)" }}>{vendor.name}</span>
         </div>
 
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr min(400px, 35%)",
-            gap: "2rem",
+            gap: "48px",
             alignItems: "start",
           }}
           className="vendor-detail-grid"
@@ -97,10 +97,10 @@ export default async function VendorDetailPage({ params }: Props) {
             {/* Image Gallery */}
             <div
               style={{
-                borderRadius: 16,
+                border: "1px solid var(--color-deep-charcoal)",
                 overflow: "hidden",
-                background: "var(--surface-subtle)",
-                marginBottom: "2rem",
+                background: "var(--color-chai-cream)",
+                marginBottom: "32px",
                 aspectRatio: "16/9",
                 position: "relative",
               }}
@@ -115,17 +115,8 @@ export default async function VendorDetailPage({ params }: Props) {
                   priority
                 />
               ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "6rem",
-                  }}
-                >
-                  {SPECIALITY_EMOJIS[vendor.speciality] ?? "🍴"}
+                <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-paper-ivory)", opacity: 0.1, lineHeight: 1 }}>
+                  {vendor.name.charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
@@ -135,8 +126,8 @@ export default async function VendorDetailPage({ params }: Props) {
               <div
                 style={{
                   display: "flex",
-                  gap: "0.5rem",
-                  marginBottom: "2rem",
+                  gap: "16px",
+                  marginBottom: "48px",
                   overflowX: "auto",
                 }}
                 className="no-scrollbar"
@@ -145,101 +136,90 @@ export default async function VendorDetailPage({ params }: Props) {
                   <div
                     key={img.id}
                     style={{
-                      width: 72,
-                      height: 54,
-                      borderRadius: 8,
+                      width: 96,
+                      height: 72,
                       overflow: "hidden",
                       flexShrink: 0,
                       position: "relative",
-                      border: img.isPrimary ? "2px solid var(--brand)" : "2px solid var(--border-subtle)",
+                      border: img.isPrimary ? "2px solid var(--color-deep-charcoal)" : "1px solid var(--color-deep-charcoal)",
+                      background: "var(--color-surface-dim)"
                     }}
                   >
-                    <Image src={img.url} alt={img.caption ?? vendor.name} fill style={{ objectFit: "cover" }} sizes="72px" />
+                    <Image src={img.url} alt={img.caption ?? vendor.name} fill style={{ objectFit: "cover" }} sizes="96px" />
                   </div>
                 ))}
               </div>
             )}
 
             {/* Vendor Info */}
-            <div style={{ marginBottom: "2rem" }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "0.75rem" }}>
-                <span className="badge badge-brand">{SPECIALITY_EMOJIS[vendor.speciality] ?? "🍴"} {vendor.speciality}</span>
-                <span className="badge badge-subtle">📍 {vendor.locality}</span>
-                {vendor.isVerified && <span className="badge badge-jade">✓ Verified</span>}
-                {vendor.isFeatured && <span className="badge badge-gold">⭐ Featured</span>}
+            <div style={{ marginBottom: "64px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center", marginBottom: "24px" }}>
+                <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-paper-ivory)" }}>{vendor.speciality}</span>
+                <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-paper-ivory)" }}>📍 {vendor.locality}</span>
+                {vendor.isVerified && <span className="label-caps" style={{ border: "1px solid var(--color-law-garden-green)", padding: "6px 12px", background: "var(--color-law-garden-green)", color: "white" }}>✓ Verified</span>}
+                {vendor.isFeatured && <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-deep-charcoal)", color: "var(--color-paper-ivory)" }}>Featured</span>}
               </div>
 
-              <h1
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(1.5rem, 4vw, 2.25rem)",
-                  fontWeight: 800,
-                  color: "var(--text-primary)",
-                  letterSpacing: "-0.02em",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <h1 className="display-xl" style={{ marginBottom: "16px" }}>
                 {vendor.name}
               </h1>
 
               {vendor.address && (
-                <p style={{ fontSize: "0.9375rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
-                  📍 {vendor.address}, {vendor.locality}, Ahmedabad
+                <p className="body-md" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px", display: "flex", gap: "8px" }}>
+                  <span>📍</span> {vendor.address}, {vendor.locality}, Ahmedabad
                 </p>
               )}
 
               {vendor.description && (
-                <p style={{ fontSize: "0.9375rem", color: "var(--text-secondary)", lineHeight: 1.65, marginTop: "0.75rem" }}>
+                <p className="body-lg" style={{ color: "var(--color-deep-charcoal)", lineHeight: 1.6, marginTop: "24px" }}>
                   {vendor.description}
                 </p>
               )}
 
-              <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)", marginTop: "0.75rem" }}>
+              <p className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginTop: "24px", paddingTop: "24px", borderTop: "1px solid var(--color-deep-charcoal)" }}>
                 Listed {formatRelative(vendor.createdAt)}
               </p>
             </div>
 
             {/* Reviews */}
             <div>
-              <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
-                Community Reviews ({vendor.ratingCount})
+              <h2 className="headline-lg" style={{ marginBottom: "24px", paddingBottom: "16px", borderBottom: "1px solid var(--color-deep-charcoal)" }}>
+                Community Log ({vendor.ratingCount})
               </h2>
               {vendor.ratings.length === 0 ? (
                 <div
                   style={{
                     textAlign: "center",
-                    padding: "2.5rem",
-                    background: "var(--surface-raised)",
-                    border: "1px solid var(--border-subtle)",
-                    borderRadius: 12,
+                    padding: "48px 24px",
+                    background: "var(--color-paper-ivory)",
+                    border: "1px solid var(--color-deep-charcoal)",
                   }}
                 >
-                  <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🌟</div>
-                  <p style={{ color: "var(--text-secondary)", fontSize: "0.9375rem" }}>
-                    No reviews yet. Be the first to rate this vendor!
+                  <div style={{ fontSize: "48px", marginBottom: "16px" }}>📝</div>
+                  <p className="body-lg" style={{ color: "var(--color-on-surface-variant)" }}>
+                    No entries yet. Be the first to rate this vendor.
                   </p>
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   {vendor.ratings.map((rating) => (
                     <div
                       key={rating.id}
-                      className="card"
-                      style={{ padding: "1rem 1.25rem" }}
+                      style={{ padding: "24px", border: "1px solid var(--color-deep-charcoal)", background: "var(--color-paper-ivory)" }}
                     >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.375rem" }}>
-                        <div style={{ display: "flex", gap: "0.25rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+                        <div style={{ display: "flex", gap: "4px" }}>
                           {[1, 2, 3, 4, 5].map((s) => (
-                            <span key={s} style={{ color: s <= rating.stars ? "var(--gold)" : "var(--surface-subtle)", fontSize: "0.9rem" }}>★</span>
+                            <span key={s} style={{ color: s <= rating.stars ? "var(--color-street-saffron)" : "var(--color-surface-dim)", fontSize: "20px" }}>★</span>
                           ))}
                         </div>
-                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{formatRelative(rating.createdAt)}</span>
+                        <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>{formatRelative(rating.createdAt)}</span>
                       </div>
                       {rating.comment && (
-                        <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: 1.6 }}>{rating.comment}</p>
+                        <p className="body-md" style={{ color: "var(--color-deep-charcoal)", lineHeight: 1.6 }}>{rating.comment}</p>
                       )}
-                      <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>
-                        {(rating as { user?: { name?: string | null } | null }).user?.name ?? "Anonymous"}
+                      <p className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--color-deep-charcoal)" }}>
+                        — {(rating as { user?: { name?: string | null } | null }).user?.name ?? "Anonymous"}
                       </p>
                     </div>
                   ))}
@@ -248,10 +228,11 @@ export default async function VendorDetailPage({ params }: Props) {
             </div>
 
             {/* Report link */}
-            <div style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: "1px solid var(--border-subtle)" }}>
+            <div style={{ marginTop: "48px", paddingTop: "24px", borderTop: "1px solid var(--color-deep-charcoal)" }}>
               <Link
                 href={`/report?vendorId=${vendor.id}&vendorName=${encodeURIComponent(vendor.name)}`}
-                style={{ fontSize: "0.8125rem", color: "var(--text-muted)", textDecoration: "none" }}
+                className="label-caps"
+                style={{ color: "var(--color-on-surface-variant)", textDecoration: "none" }}
               >
                 ⚑ Report this vendor
               </Link>
@@ -259,49 +240,47 @@ export default async function VendorDetailPage({ params }: Props) {
           </div>
 
           {/* RIGHT COLUMN — Rating panel */}
-          <div style={{ position: "sticky", top: 80 }}>
+          <div style={{ position: "sticky", top: 120 }}>
             {/* Rating summary */}
             <div
-              className="card"
-              style={{ padding: "1.5rem", marginBottom: "1rem" }}
+              style={{ padding: "32px", marginBottom: "24px", border: "1px solid var(--color-deep-charcoal)", background: "var(--color-paper-ivory)" }}
             >
-              <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+              <div style={{ textAlign: "center", marginBottom: "32px", paddingBottom: "32px", borderBottom: "1px solid var(--color-deep-charcoal)" }}>
                 <div
+                  className="display-xl"
                   style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: "3rem",
-                    fontWeight: 800,
-                    color: avg > 0 ? "var(--gold)" : "var(--text-muted)",
+                    fontSize: "80px",
+                    color: avg > 0 ? "var(--color-street-saffron)" : "var(--color-on-surface-variant)",
                     lineHeight: 1,
-                    marginBottom: "0.25rem",
+                    marginBottom: "16px",
                   }}
                 >
                   {avg > 0 ? avg.toFixed(1) : "—"}
                 </div>
-                <div style={{ display: "flex", justifyContent: "center", gap: "0.2rem", marginBottom: "0.375rem" }}>
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px", marginBottom: "16px" }}>
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <span key={s} style={{ fontSize: "1.25rem", color: s <= Math.round(avg) ? "var(--gold)" : "var(--surface-subtle)" }}>★</span>
+                    <span key={s} style={{ fontSize: "24px", color: s <= Math.round(avg) ? "var(--color-street-saffron)" : "var(--color-surface-dim)" }}>★</span>
                   ))}
                 </div>
-                <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)" }}>
-                  {vendor.ratingCount} rating{vendor.ratingCount !== 1 ? "s" : ""}
+                <div className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
+                  {pluralize(vendor.ratingCount, "rating")}
                 </div>
               </div>
 
               {/* Rating distribution */}
               {vendor.ratingCount > 0 && (
-                <div style={{ marginBottom: "1rem" }}>
+                <div>
                   {[5, 4, 3, 2, 1].map((star) => {
                     const count = vendor.ratings.filter((r) => r.stars === star).length;
                     const pct = vendor.ratingCount > 0 ? (count / vendor.ratingCount) * 100 : 0;
                     return (
-                      <div key={star} style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.3rem" }}>
-                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", width: 16, textAlign: "right" }}>{star}</span>
-                        <span style={{ color: "var(--gold)", fontSize: "0.75rem" }}>★</span>
-                        <div className="progress-bar" style={{ flex: 1 }}>
-                          <div className="progress-bar-fill" style={{ width: `${pct}%` }} />
+                      <div key={star} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                        <span className="label-caps" style={{ color: "var(--color-on-surface-variant)", width: 16, textAlign: "right" }}>{star}</span>
+                        <span style={{ color: "var(--color-street-saffron)", fontSize: "16px" }}>★</span>
+                        <div style={{ flex: 1, height: "4px", background: "var(--color-surface-dim)" }}>
+                          <div style={{ height: "100%", width: `${pct}%`, background: "var(--color-deep-charcoal)" }} />
                         </div>
-                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", width: 20 }}>{count}</span>
+                        <span className="label-caps" style={{ color: "var(--color-on-surface-variant)", width: 24, textAlign: "right" }}>{count}</span>
                       </div>
                     );
                   })}

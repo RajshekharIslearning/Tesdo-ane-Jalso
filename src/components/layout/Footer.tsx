@@ -6,11 +6,11 @@ export default function Footer() {
   return (
     <footer
       style={{
-        borderTop: "1px solid var(--border-subtle)",
+        borderTop: "1px solid var(--color-deep-charcoal)",
         marginTop: "5rem",
-        paddingTop: "3rem",
+        paddingTop: "4rem",
         paddingBottom: "2rem",
-        background: "var(--surface-raised)",
+        background: "var(--color-paper-ivory)",
       }}
     >
       <div className="container-page">
@@ -18,45 +18,45 @@ export default function Footer() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "2rem",
-            marginBottom: "2.5rem",
+            gap: "3rem",
+            marginBottom: "4rem",
           }}
         >
           {/* Brand */}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+          <div style={{ gridColumn: "1 / -1", maxWidth: 400 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
               <div
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  background: "linear-gradient(135deg, oklch(0.68 0.20 42), oklch(0.76 0.17 55))",
+                  width: 40,
+                  height: 40,
+                  background: "var(--color-deep-charcoal)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <ShoppingBag size={16} color="#fff" />
+                <ShoppingBag size={20} color="var(--color-paper-ivory)" />
               </div>
               <span
                 style={{
                   fontFamily: "var(--font-display)",
                   fontWeight: 700,
-                  fontSize: "0.9375rem",
-                  color: "var(--text-primary)",
+                  fontSize: "1.25rem",
+                  color: "var(--color-deep-charcoal)",
+                  letterSpacing: "-0.02em",
                 }}
               >
                 {SITE_CONFIG.name}
               </span>
             </div>
-            <p style={{ fontSize: "0.8125rem", color: "var(--text-secondary)", lineHeight: 1.6, maxWidth: 240 }}>
+            <p className="body-md" style={{ color: "var(--color-on-surface-variant)", marginBottom: "1.5rem" }}>
               Community-powered platform to discover and rate the best street food vendors across Ahmedabad.
             </p>
-            <div style={{ display: "flex", gap: "0.625rem", marginTop: "1rem" }}>
+            <div style={{ display: "flex", gap: "0.75rem" }}>
               {[
-                { href: SITE_CONFIG.social.instagram, icon: <Globe size={16} /> },
-                { href: SITE_CONFIG.social.twitter, icon: <LinkIcon size={16} /> },
-                { href: `mailto:${SITE_CONFIG.email}`, icon: <Mail size={16} /> },
+                { href: SITE_CONFIG.social.instagram, icon: <Globe size={18} /> },
+                { href: SITE_CONFIG.social.twitter, icon: <LinkIcon size={18} /> },
+                { href: `mailto:${SITE_CONFIG.email}`, icon: <Mail size={18} /> },
               ].map(({ href, icon }) => (
                 <a
                   key={href}
@@ -64,19 +64,18 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 8,
-                    background: "var(--surface-overlay)",
-                    border: "1px solid var(--border-subtle)",
+                    width: 40,
+                    height: 40,
+                    background: "var(--color-surface)",
+                    border: "1px solid var(--border-default)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "var(--text-secondary)",
+                    color: "var(--color-deep-charcoal)",
                     transition: "all 0.2s ease",
                     textDecoration: "none",
                   }}
-                  className="hover:border-[oklch(0.70_0.19_55/0.4)] hover:text-[var(--brand-light)]"
+                  className="hover:bg-[var(--color-street-saffron)] hover:text-white hover:border-[var(--color-street-saffron)]"
                 >
                   {icon}
                 </a>
@@ -86,7 +85,7 @@ export default function Footer() {
 
           {/* Explore */}
           <div>
-            <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-muted)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+            <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "1rem" }}>
               Explore
             </div>
             {[
@@ -100,13 +99,10 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-muted)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+            <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "1rem" }}>
               Company
             </div>
             {[
-              { href: "/about", label: "About Us" },
-              { href: "/contact", label: "Contact" },
-              { href: "/faq", label: "FAQ" },
               { href: "/report", label: "Report Content" },
             ].map(({ href, label }) => (
               <FooterLink key={href} href={href}>{label}</FooterLink>
@@ -115,12 +111,11 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-muted)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+            <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "1rem" }}>
               Legal
             </div>
             {[
-              { href: "/privacy", label: "Privacy Policy" },
-              { href: "/terms", label: "Terms of Service" },
+              { href: "/", label: "Terms of Service" },
             ].map(({ href, label }) => (
               <FooterLink key={href} href={href}>{label}</FooterLink>
             ))}
@@ -130,19 +125,19 @@ export default function Footer() {
         {/* Bottom bar */}
         <div
           style={{
-            borderTop: "1px solid var(--border-subtle)",
-            paddingTop: "1.5rem",
+            borderTop: "1px solid var(--border-default)",
+            paddingTop: "2rem",
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "space-between",
             alignItems: "center",
-            gap: "0.75rem",
+            gap: "1rem",
           }}
         >
-          <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>
-            © {new Date().getFullYear()} {SITE_CONFIG.name}. Community powered · No signup required.
+          <p className="body-md" style={{ fontSize: "14px", color: "var(--color-on-surface-variant)" }}>
+            © {new Date().getFullYear()} {SITE_CONFIG.name}.
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+          <p className="body-md" style={{ fontSize: "14px", color: "var(--color-on-surface-variant)" }}>
             Ratings are anonymous and one-per-user per vendor.
           </p>
         </div>
@@ -157,13 +152,14 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
       href={href}
       style={{
         display: "block",
-        fontSize: "0.875rem",
-        color: "var(--text-secondary)",
+        fontFamily: "var(--font-sans)",
+        fontSize: "16px",
+        color: "var(--color-deep-charcoal)",
         textDecoration: "none",
-        marginBottom: "0.375rem",
+        marginBottom: "0.75rem",
         transition: "color 0.15s ease",
       }}
-      className="hover:text-[var(--brand-light)]"
+      className="hover:text-[var(--color-street-saffron)]"
     >
       {children}
     </Link>
