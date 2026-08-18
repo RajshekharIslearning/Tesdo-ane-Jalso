@@ -9,7 +9,7 @@ import {
   getSiteStats,
 } from "@/services/vendor.server";
 import { SPECIALITIES, LOCALITIES, SITE_CONFIG } from "@/constants";
-import { getFoodImage, HERO_FOOD_IMAGES } from "@/constants/food-images";
+import { getFoodImage, SPECIALITY_IMAGES } from "@/constants/food-images";
 import { formatRating, pluralize } from "@/utils/format";
 
 export const metadata: Metadata = {
@@ -37,81 +37,63 @@ export default async function HomePage() {
   return (
     <div>
       {/* ===================== HERO ===================== */}
-      <section style={{ paddingTop: "120px", paddingBottom: "120px" }}>
-        <div className="container-page">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "64px", alignItems: "center" }}>
+      <section style={{ position: "relative", minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", margin: "0 -20px" }}>
+        {/* Background Catalogue */}
+        <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gridAutoRows: "250px", gap: "2px", zIndex: 0 }}>
+          {Object.values(SPECIALITY_IMAGES).slice(0, 16).map((src, i) => (
+            <div key={i} style={{ position: "relative", width: "100%", height: "100%" }}>
+              <Image src={src} alt="Food background" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 50vw, 25vw" />
+            </div>
+          ))}
+        </div>
+        
+        {/* Dark Overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "rgba(15, 15, 15, 0.8)", zIndex: 1 }} />
+        
+        {/* Content */}
+        <div className="container-page" style={{ position: "relative", zIndex: 2, width: "100%", padding: "120px 20px", textAlign: "center" }}>
+          <div style={{ maxWidth: "800px", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div
+              className="label-caps"
+              style={{
+                color: "var(--color-street-saffron)",
+                marginBottom: "32px",
+              }}
+            >
+              The City's Directory
+            </div>
+
+            <h1 className="display-xl" style={{ marginBottom: "24px", color: "var(--color-paper-ivory)" }}>
+              Find your next <br />
+              <span style={{ color: "rgba(249, 247, 242, 0.7)", fontStyle: "italic" }}>favourite spot.</span>
+            </h1>
+
+            <p className="body-lg" style={{ color: "rgba(249, 247, 242, 0.8)", marginBottom: "48px", maxWidth: "480px", marginInline: "auto" }}>
+              Ahmedabad's street food, documented and rated by the people who live here.
+            </p>
+
+            {/* Discovery Search */}
+            <form action="/browse" method="GET" style={{ display: "flex", gap: "8px", width: "100%", maxWidth: "560px", marginBottom: "32px", marginInline: "auto" }}>
+              <div style={{ position: "relative", flexGrow: 1 }}>
+                <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)" }} />
+                <input 
+                  name="search" 
+                  placeholder="Search food, vendors or localities..." 
+                  className="input" 
+                  style={{ paddingLeft: "48px", height: "64px", fontSize: "16px", background: "var(--color-paper-ivory)" }}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ height: "64px", padding: "0 32px", background: "var(--color-street-saffron)", color: "white" }}>
+                Search
+              </button>
+            </form>
+            <div className="label-caps" style={{ color: "rgba(249, 247, 242, 0.6)", marginBottom: "32px", fontSize: "12px" }}>
+              Popular searches: Dabeli, Manek Chowk, Law Garden
+            </div>
             
-            {/* Left Content */}
-            <div style={{ paddingRight: "32px" }}>
-              <div
-                className="label-caps"
-                style={{
-                  color: "var(--color-street-saffron)",
-                  marginBottom: "32px",
-                }}
-              >
-                The City's Directory
-              </div>
-
-              <h1 className="display-xl" style={{ marginBottom: "24px" }}>
-                Find your next <br />
-                <span style={{ color: "var(--color-on-surface-variant)", fontStyle: "italic" }}>favourite spot.</span>
-              </h1>
-
-              <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", marginBottom: "48px", maxWidth: "480px" }}>
-                Ahmedabad's street food, documented and rated by the people who live here.
-              </p>
-
-              {/* Discovery Search */}
-              <form action="/browse" method="GET" style={{ display: "flex", gap: "8px", maxWidth: "480px", marginBottom: "32px" }}>
-                <div style={{ position: "relative", flexGrow: 1 }}>
-                  <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)" }} />
-                  <input 
-                    name="search" 
-                    placeholder="Search food, vendors or localities..." 
-                    className="input" 
-                    style={{ paddingLeft: "48px", height: "56px", fontSize: "16px", background: "var(--color-paper-ivory)" }}
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary" style={{ height: "56px", padding: "0 32px" }}>
-                  Search
-                </button>
-              </form>
-              <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", fontSize: "12px" }}>
-                Popular searches: Dabeli, Manek Chowk, Law Garden
-              </div>
-              
-              <Link href="/add" className="label-caps hover:text-[var(--color-street-saffron)] transition-colors duration-200" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none" }}>
-                + Or submit a vendor
-              </Link>
-            </div>
-
-            {/* Right — Food Photo Mosaic */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "220px 220px", gap: "8px" }}>
-              {HERO_FOOD_IMAGES.map((img, i) => (
-                <div
-                  key={i}
-                  style={{
-                    position: "relative",
-                    overflow: "hidden",
-                    border: "1px solid var(--color-deep-charcoal)",
-                    // First image spans full height on left column
-                    ...(i === 0 ? { gridRow: "1 / 3" } : {}),
-                  }}
-                >
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    style={{ objectFit: "cover", transition: "transform 0.6s ease" }}
-                    sizes="(max-width: 768px) 50vw, 200px"
-                    className="hover:scale-105"
-                  />
-                  {/* Subtle overlay to match ivory palette */}
-                  <div style={{ position: "absolute", inset: 0, background: "rgba(249, 247, 242, 0.08)" }} />
-                </div>
-              ))}
-            </div>
+            <Link href="/add" className="label-caps hover:text-[var(--color-street-saffron)] transition-colors duration-200" style={{ color: "rgba(249, 247, 242, 0.8)", textDecoration: "none" }}>
+              + Or submit a vendor
+            </Link>
           </div>
         </div>
       </section>
