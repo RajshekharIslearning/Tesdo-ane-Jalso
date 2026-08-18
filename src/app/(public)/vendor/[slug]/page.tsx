@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getVendorBySlug } from "@/services/vendor.server";
 import { SITE_CONFIG } from "@/constants";
+import { getFoodImage } from "@/constants/food-images";
 import { formatRelative, pluralize } from "@/utils/format";
 import RatingSection from "./RatingSection";
 
@@ -115,19 +116,14 @@ export default async function VendorDetailPage({ params }: Props) {
                   priority
                 />
               ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-deep-charcoal)", opacity: 0.08, lineHeight: 1 }}>
-                    {vendor.name.charAt(0).toUpperCase()}
-                  </div>
-                </div>
+                <Image
+                  src={getFoodImage(vendor.speciality)}
+                  alt={vendor.speciality}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                  priority
+                />
               )}
             </div>
 

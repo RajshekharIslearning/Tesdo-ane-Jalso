@@ -9,6 +9,7 @@ import {
   getSiteStats,
 } from "@/services/vendor.server";
 import { SPECIALITIES, LOCALITIES, SITE_CONFIG } from "@/constants";
+import { getFoodImage, HERO_FOOD_IMAGES } from "@/constants/food-images";
 import { formatRating, pluralize } from "@/utils/format";
 
 export const metadata: Metadata = {
@@ -85,27 +86,32 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            {/* Right Asymmetric Grid (Stats) */}
-            {(stats.totalVendors > 5 || stats.totalRatings > 5) && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                {stats.totalVendors > 0 && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "48px" }}>
-                    <div style={{ background: "var(--color-chai-cream)", padding: "32px", height: "240px", border: "1px solid var(--color-deep-charcoal)", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-                      <div className="display-xl" style={{ fontSize: "48px", lineHeight: 1 }}>{stats.totalVendors}</div>
-                      <div className="label-caps" style={{ marginTop: "16px" }}>Vendors Documented</div>
-                    </div>
-                  </div>
-                )}
-                {stats.totalRatings > 0 && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={{ background: "var(--color-street-saffron)", padding: "32px", height: "280px", border: "1px solid var(--color-deep-charcoal)", display: "flex", flexDirection: "column", justifyContent: "flex-end", color: "white" }}>
-                      <div className="display-xl" style={{ fontSize: "48px", lineHeight: 1, color: "white" }}>{stats.totalRatings}</div>
-                      <div className="label-caps" style={{ color: "white", marginTop: "16px" }}>{pluralize(stats.totalRatings, "Community Review")}</div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Right — Food Photo Mosaic */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "220px 220px", gap: "8px" }}>
+              {HERO_FOOD_IMAGES.map((img, i) => (
+                <div
+                  key={i}
+                  style={{
+                    position: "relative",
+                    overflow: "hidden",
+                    border: "1px solid var(--color-deep-charcoal)",
+                    // First image spans full height on left column
+                    ...(i === 0 ? { gridRow: "1 / 3" } : {}),
+                  }}
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    style={{ objectFit: "cover", transition: "transform 0.6s ease" }}
+                    sizes="(max-width: 768px) 50vw, 200px"
+                    className="hover:scale-105"
+                  />
+                  {/* Subtle overlay to match ivory palette */}
+                  <div style={{ position: "absolute", inset: 0, background: "rgba(249, 247, 242, 0.08)" }} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -396,21 +402,14 @@ function VendorCard({
                 className="hover:scale-105"
               />
             ) : (
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "24px",
-                  textAlign: "center",
-                }}
-              >
-                <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-paper-ivory)", opacity: 0.1, lineHeight: 1 }}>
-                  {vendor.name.charAt(0).toUpperCase()}
-                </div>
-              </div>
+              <Image
+                src={getFoodImage(vendor.speciality)}
+                alt={vendor.speciality}
+                fill
+                style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                className="hover:scale-105"
+              />
             )}
           </div>
         )}
@@ -446,7 +445,7 @@ function VendorCard({
           {/* "Why this place?" Signal */}
           <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
             <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
-              {signal ? signal : pluralize(vendor.ratingCount, "Community Review")}
+              {signal ? signal : pluralize(vendor.ratingCount, "rating")}
             </span>
           </div>
         </div>

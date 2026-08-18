@@ -3,9 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, MapPin, Filter, ChevronDown } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LOCALITIES, SPECIALITIES, SORT_OPTIONS } from "@/constants";
+import { getFoodImage } from "@/constants/food-images";
 import { formatRating, pluralize } from "@/utils/format";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -266,22 +267,14 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
               className="hover:scale-105"
             />
           ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "24px",
-                textAlign: "center",
-              }}
-            >
-              <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-paper-ivory)", opacity: 0.1, lineHeight: 1 }}>
-                {vendor.name.charAt(0).toUpperCase()}
-              </div>
-            </div>
+            <Image
+              src={getFoodImage(vendor.speciality)}
+              alt={vendor.speciality}
+              fill
+              style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
+              sizes="(max-width: 640px) 100vw, 300px"
+              className="hover:scale-105"
+            />
           )}
           
           <div style={{ position: "absolute", top: 16, left: 16, display: "flex", flexDirection: "column", gap: "8px" }}>
