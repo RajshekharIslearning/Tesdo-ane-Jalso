@@ -339,12 +339,12 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
           </div>
           
           <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px" }}>
-            📍 {vendor.locality}
+            {vendor.locality}
           </div>
 
           <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
             <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
-              {vendor.isFeatured ? "Editorial Pick" : vendor.isVerified ? "Verified Vendor" : vendor.ratingCount === 0 ? "New Addition" : vendor.ratingCount >= 5 && avg >= 4.5 ? "Community Favourite" : pluralize(vendor.ratingCount, "Community Log")}
+              {vendor.isFeatured ? "Editorial Pick" : vendor.isVerified ? "Verified Vendor" : vendor.ratingCount === 0 ? "New Addition" : vendor.ratingCount >= 5 && avg >= 4.5 ? "Community Favourite" : pluralize(vendor.ratingCount, "Community Review")}
             </span>
           </div>
         </div>

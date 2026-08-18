@@ -17,12 +17,18 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, topVendors, featuredVendors, recentVendors] = await Promise.all([
+  const [stats, topVendors, featuredVendors] = await Promise.all([
     getSiteStats(),
     getTopRatedVendors(3),
     getFeaturedVendors(),
-    getRecentVendors(8), // Fetch more for dense list
   ]);
+
+  const recentVendorsRaw = await getRecentVendors(12);
+
+  // Filter out featured vendors from recent vendors to avoid duplication
+  const recentVendors = recentVendorsRaw
+    .filter((v) => !featuredVendors.some((fv) => fv.id === v.id))
+    .slice(0, 8);
 
   const popularCategories = SPECIALITIES.slice(0, 8);
   const popularLocalities = LOCALITIES.slice(0, 8);
@@ -61,7 +67,7 @@ export default async function HomePage() {
                   <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)" }} />
                   <input 
                     name="search" 
-                    placeholder="What are you craving?" 
+                    placeholder="Search food, vendors or localities..." 
                     className="input" 
                     style={{ paddingLeft: "48px", height: "56px", fontSize: "16px", background: "var(--color-paper-ivory)" }}
                   />
@@ -70,6 +76,9 @@ export default async function HomePage() {
                   Search
                 </button>
               </form>
+              <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", fontSize: "12px" }}>
+                Popular searches: Dabeli, Manek Chowk, Law Garden
+              </div>
               
               <Link href="/add" className="label-caps hover:text-[var(--color-street-saffron)] transition-colors duration-200" style={{ color: "var(--color-on-surface-variant)", textDecoration: "none" }}>
                 + Or submit a vendor
@@ -91,7 +100,7 @@ export default async function HomePage() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                     <div style={{ background: "var(--color-street-saffron)", padding: "32px", height: "280px", border: "1px solid var(--color-deep-charcoal)", display: "flex", flexDirection: "column", justifyContent: "flex-end", color: "white" }}>
                       <div className="display-xl" style={{ fontSize: "48px", lineHeight: 1, color: "white" }}>{stats.totalRatings}</div>
-                      <div className="label-caps" style={{ color: "white", marginTop: "16px" }}>{pluralize(stats.totalRatings, "Community Log")}</div>
+                      <div className="label-caps" style={{ color: "white", marginTop: "16px" }}>{pluralize(stats.totalRatings, "Community Review")}</div>
                     </div>
                   </div>
                 )}
@@ -140,19 +149,16 @@ export default async function HomePage() {
                         0{i + 1}
                       </div>
                       <div style={{ flexGrow: 1 }}>
-                        <div className="headline-md" style={{ marginBottom: "4px", color: "var(--color-deep-charcoal)" }}>
+                        <div className="headline-md" style={{ marginBottom: "4px", color: "var(--color-deep-charcoal)", textTransform: "uppercase" }}>
                           {vendor.name}
                         </div>
                         <div className="body-md" style={{ color: "var(--color-on-surface-variant)" }}>
                           {vendor.speciality} · {vendor.locality}
                         </div>
                       </div>
-                      <div style={{ textAlign: "right", minWidth: "100px" }}>
+                      <div style={{ textAlign: "right", minWidth: "120px" }}>
                         <div className="headline-sm" style={{ color: "var(--color-deep-charcoal)", marginBottom: "4px" }}>
-                          ★ {formatRating(vendor.ratingSum, vendor.ratingCount)}
-                        </div>
-                        <div className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
-                          {pluralize(vendor.ratingCount, "rating")}
+                          ★ {formatRating(vendor.ratingSum, vendor.ratingCount)} · {pluralize(vendor.ratingCount, "rating")}
                         </div>
                       </div>
                     </div>
@@ -274,12 +280,12 @@ export default async function HomePage() {
         >
           <div>
             <h2 className="display-xl" style={{ color: "var(--color-paper-ivory)", marginBottom: "16px", fontSize: "56px" }}>
-              Add your <br/><span style={{ color: "var(--color-street-saffron)" }}>Favourite</span>
+              Know a place <br/><span style={{ color: "var(--color-street-saffron)" }}>worth eating at?</span>
             </h2>
           </div>
           <div>
             <p className="body-lg" style={{ marginBottom: "40px", color: "var(--color-surface-dim)", maxWidth: "400px" }}>
-              Is your favourite spot missing? Help others discover it by adding it to the directory.
+              Add a street-food vendor that Ahmedabad should know about.
             </p>
             <Link href="/add" className="btn btn-lg" style={{ background: "var(--color-street-saffron)", color: "white", borderRadius: 0 }}>
               Submit a Vendor
@@ -434,13 +440,13 @@ function VendorCard({
           </div>
           
           <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px" }}>
-            📍 {vendor.locality}
+            {vendor.locality}
           </div>
 
           {/* "Why this place?" Signal */}
           <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
             <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
-              {signal ? signal : pluralize(vendor.ratingCount, "Community Log")}
+              {signal ? signal : pluralize(vendor.ratingCount, "Community Review")}
             </span>
           </div>
         </div>
