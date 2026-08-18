@@ -344,7 +344,7 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
 
           <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
             <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
-              {vendor.isFeatured ? "Editorial Pick" : vendor.isVerified ? "Verified Vendor" : vendor.ratingCount === 0 ? "New Addition" : vendor.ratingCount >= 5 && avg >= 4.5 ? "Community Favourite" : pluralize(vendor.ratingCount, "Community Review")}
+              {vendor.isFeatured ? "Editorial Pick" : vendor.isVerified ? "Verified Vendor" : vendor.ratingCount === 0 ? "New Listing" : vendor.ratingCount >= 5 && avg >= 4.5 ? "Community Favourite" : pluralize(vendor.ratingCount, "rating")}
             </span>
           </div>
         </div>
@@ -394,15 +394,14 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
         background: "var(--color-paper-ivory)",
       }}
     >
-      <div style={{ fontSize: "64px", marginBottom: "24px" }}>🔍</div>
       <h3 className="headline-md" style={{ marginBottom: "16px" }}>
-        No results found.
+        Nothing found.
       </h3>
       <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", maxWidth: "400px", margin: "0 auto 32px" }}>
-        We couldn't find any vendors matching your criteria. Be the first to add one to the directory!
+        Try different filters, or be the first to add a vendor here.
       </p>
       <button onClick={onAdd} className="btn btn-primary btn-lg">
-        Submit a Vendor
+        Add a Vendor
       </button>
     </div>
   );

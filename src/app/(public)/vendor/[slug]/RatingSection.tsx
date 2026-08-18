@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-const STAR_LABELS = ["", "Poor", "Below Average", "Average", "Good", "Excellent"];
+const STAR_LABELS = ["", "Poor", "Below average", "Average", "Good", "Excellent"];
 
 export default function RatingSection({ vendorId, vendorName }: { vendorId: string; vendorName: string }) {
   const [stars, setStars] = useState(0);
@@ -33,12 +33,12 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
 
       if (data.success) {
         setSubmitted(true);
-        toast.success("Rating submitted! Thank you 🙏");
+        toast.success("Rating submitted. Thank you.");
       } else if (data.error === "You have already rated this vendor") {
         setSubmitted(true);
-        toast.info("You've already rated this vendor");
+        toast.info("You've already rated this vendor.");
       } else {
-        toast.error(data.error ?? "Failed to submit rating");
+        toast.error(data.error ?? "Failed to submit rating.");
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -53,10 +53,10 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
         style={{ padding: "32px", textAlign: "center", border: "1px solid var(--color-deep-charcoal)", background: "var(--color-chai-cream)" }}
       >
         <div className="headline-sm" style={{ marginBottom: "8px", color: "var(--color-deep-charcoal)" }}>
-          Thank you for rating.
+          Thanks for rating.
         </div>
         <div className="body-md" style={{ color: "var(--color-on-surface-variant)" }}>
-          Your log has been recorded into the directory.
+          Your vote helps others find the best spots.
         </div>
       </div>
     );
@@ -65,7 +65,7 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
   return (
     <div style={{ padding: "32px", border: "1px solid var(--color-deep-charcoal)", background: "var(--color-chai-cream)" }}>
       <h3 className="headline-sm" style={{ marginBottom: "24px" }}>
-        Add your Log
+        Rate this place
       </h3>
 
       {/* Stars */}
@@ -107,7 +107,7 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
       <textarea
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        placeholder="Write your review here... (optional)"
+        placeholder="What did you think? (optional)"
         rows={4}
         maxLength={500}
         className="input"
@@ -123,10 +123,10 @@ export default function RatingSection({ vendorId, vendorName }: { vendorId: stri
         className="btn btn-primary"
         style={{ width: "100%", opacity: stars === 0 || submitting ? 0.5 : 1, padding: "16px" }}
       >
-        {submitting ? "Submitting..." : "Publish Log"}
+        {submitting ? "Submitting..." : "Submit Rating"}
       </button>
       <p className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginTop: "16px", textAlign: "center" }}>
-        Anonymous rating · one per vendor
+        Anonymous · one rating per vendor
       </p>
     </div>
   );

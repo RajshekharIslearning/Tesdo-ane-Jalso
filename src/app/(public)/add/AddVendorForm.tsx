@@ -66,15 +66,14 @@ export default function AddVendorForm() {
       {step === "duplicate-warning" && (
         <div
           style={{
-            background: "oklch(0.82 0.16 82 / 0.08)",
-            border: "1px solid oklch(0.82 0.16 82 / 0.3)",
-            borderRadius: 12,
+            background: "rgba(242, 140, 40, 0.06)",
+            border: "1px solid var(--color-street-saffron)",
             padding: "1.25rem 1.5rem",
             marginBottom: "1.5rem",
           }}
         >
-          <div style={{ fontWeight: 600, color: "var(--gold)", marginBottom: "0.5rem", fontSize: "0.9375rem" }}>
-            ⚠️ Similar vendors found in this locality
+          <div style={{ fontWeight: 600, color: "var(--color-street-saffron)", marginBottom: "0.5rem", fontSize: "0.9375rem" }}>
+            Similar vendors found in this locality
           </div>
           <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)", marginBottom: "0.75rem" }}>
             {similar.map((v) => (
@@ -111,7 +110,7 @@ export default function AddVendorForm() {
             placeholder="e.g. Ramesh Pani Puri wala"
             className={`input${errors.name ? " input-error" : ""}`}
           />
-          {errors.name && <p style={{ fontSize: "0.8125rem", color: "oklch(0.50 0.18 25)", marginTop: "0.375rem" }}>{errors.name.message}</p>}
+          {errors.name && <p style={{ fontSize: "0.8125rem", color: "var(--color-error)", marginTop: "0.375rem" }}>{errors.name.message}</p>}
         </div>
 
         {/* Speciality */}
@@ -126,7 +125,7 @@ export default function AddVendorForm() {
             <option value="">Select speciality</option>
             {SPECIALITIES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
-          {errors.speciality && <p style={{ fontSize: "0.8125rem", color: "oklch(0.50 0.18 25)", marginTop: "0.375rem" }}>{errors.speciality.message}</p>}
+          {errors.speciality && <p style={{ fontSize: "0.8125rem", color: "var(--color-error)", marginTop: "0.375rem" }}>{errors.speciality.message}</p>}
         </div>
 
         {/* Custom speciality */}
@@ -154,7 +153,7 @@ export default function AddVendorForm() {
             <option value="">Select locality</option>
             {[...LOCALITIES].sort().map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
-          {errors.locality && <p style={{ fontSize: "0.8125rem", color: "oklch(0.50 0.18 25)", marginTop: "0.375rem" }}>{errors.locality.message}</p>}
+          {errors.locality && <p style={{ fontSize: "0.8125rem", color: "var(--color-error)", marginTop: "0.375rem" }}>{errors.locality.message}</p>}
         </div>
 
         {/* Address */}
@@ -194,7 +193,7 @@ export default function AddVendorForm() {
           className="btn btn-primary btn-lg"
           style={{ opacity: submitting ? 0.6 : 1 }}
         >
-          {submitting ? "Checking for duplicates..." : "Submit Vendor 🚀"}
+          {submitting ? "Submitting..." : "Submit Vendor"}
         </button>
 
         <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)", textAlign: "center" }}>

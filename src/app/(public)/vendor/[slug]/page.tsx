@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getVendorBySlug } from "@/services/vendor.server";
 import { SITE_CONFIG } from "@/constants";
-import { formatRelative, formatDate, pluralize } from "@/utils/format";
+import { formatRelative, pluralize } from "@/utils/format";
 import RatingSection from "./RatingSection";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const avg = vendor.ratingCount > 0 ? (vendor.ratingSum / vendor.ratingCount).toFixed(1) : null;
   const title = `${vendor.name} — ${vendor.speciality} in ${vendor.locality}`;
   const description = vendor.description
-    ?? `${vendor.name} serves ${vendor.speciality} in ${vendor.locality}, Ahmedabad. ${avg ? `Rated ${avg}/5 by ${vendor.ratingCount} community members.` : "Be the first to rate!"}`;
+    ?? `${vendor.name} serves ${vendor.speciality} in ${vendor.locality}, Ahmedabad. ${avg ? `Rated ${avg}/5 by ${vendor.ratingCount} people.` : "Be the first to rate!"}`;
 
   return {
     title,
@@ -115,8 +115,18 @@ export default async function VendorDetailPage({ params }: Props) {
                   priority
                 />
               ) : (
-                <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-paper-ivory)", opacity: 0.1, lineHeight: 1 }}>
-                  {vendor.name.charAt(0).toUpperCase()}
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div className="display-xl" style={{ fontSize: "80px", color: "var(--color-deep-charcoal)", opacity: 0.08, lineHeight: 1 }}>
+                    {vendor.name.charAt(0).toUpperCase()}
+                  </div>
                 </div>
               )}
             </div>
@@ -151,22 +161,23 @@ export default async function VendorDetailPage({ params }: Props) {
               </div>
             )}
 
-            {/* Vendor Info */}
+            {/* Vendor Info — H1 first for correct hierarchy */}
             <div style={{ marginBottom: "64px" }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center", marginBottom: "24px" }}>
-                <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-paper-ivory)" }}>{vendor.speciality}</span>
-                <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-paper-ivory)" }}>📍 {vendor.locality}</span>
-                {vendor.isVerified && <span className="label-caps" style={{ border: "1px solid var(--color-law-garden-green)", padding: "6px 12px", background: "var(--color-law-garden-green)", color: "white" }}>✓ Verified</span>}
-                {vendor.isFeatured && <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-deep-charcoal)", color: "var(--color-paper-ivory)" }}>Featured</span>}
-              </div>
-
-              <h1 className="display-xl" style={{ marginBottom: "16px" }}>
+              <h1 className="display-xl" style={{ marginBottom: "20px" }}>
                 {vendor.name}
               </h1>
 
+              {/* Tags below the name */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", marginBottom: "24px" }}>
+                <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-paper-ivory)" }}>{vendor.speciality}</span>
+                <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-paper-ivory)" }}>{vendor.locality}</span>
+                {vendor.isVerified && <span className="label-caps" style={{ border: "1px solid var(--color-law-garden-green)", padding: "6px 12px", background: "var(--color-law-garden-green)", color: "white" }}>Verified</span>}
+                {vendor.isFeatured && <span className="label-caps" style={{ border: "1px solid var(--color-deep-charcoal)", padding: "6px 12px", background: "var(--color-deep-charcoal)", color: "var(--color-paper-ivory)" }}>Featured</span>}
+              </div>
+
               {vendor.address && (
-                <p className="body-md" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px", display: "flex", gap: "8px" }}>
-                  <span>📍</span> {vendor.address}, {vendor.locality}, Ahmedabad
+                <p className="body-md" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px" }}>
+                  {vendor.address}, {vendor.locality}, Ahmedabad
                 </p>
               )}
 
@@ -181,23 +192,22 @@ export default async function VendorDetailPage({ params }: Props) {
               </p>
             </div>
 
-            {/* Reviews */}
+            {/* Ratings */}
             <div>
               <h2 className="headline-lg" style={{ marginBottom: "24px", paddingBottom: "16px", borderBottom: "1px solid var(--color-deep-charcoal)" }}>
-                Community Log ({vendor.ratingCount})
+                {pluralize(vendor.ratingCount, "Rating")}
               </h2>
               {vendor.ratings.length === 0 ? (
                 <div
                   style={{
-                    textAlign: "center",
                     padding: "48px 24px",
                     background: "var(--color-paper-ivory)",
                     border: "1px solid var(--color-deep-charcoal)",
+                    textAlign: "center",
                   }}
                 >
-                  <div style={{ fontSize: "48px", marginBottom: "16px" }}>📝</div>
                   <p className="body-lg" style={{ color: "var(--color-on-surface-variant)" }}>
-                    No entries yet. Be the first to rate this vendor.
+                    No ratings yet. Be the first.
                   </p>
                 </div>
               ) : (
@@ -234,7 +244,7 @@ export default async function VendorDetailPage({ params }: Props) {
                 className="label-caps"
                 style={{ color: "var(--color-on-surface-variant)", textDecoration: "none" }}
               >
-                ⚑ Report this vendor
+                Report this vendor
               </Link>
             </div>
           </div>

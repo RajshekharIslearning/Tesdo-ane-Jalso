@@ -12,23 +12,14 @@ export default async function RankingsPage() {
   const rankings = await getLocalityRankings();
 
   return (
-    <div className="container-page" style={{ paddingTop: "2rem", paddingBottom: "5rem" }}>
+    <div className="container-page" style={{ paddingTop: "64px", paddingBottom: "120px" }}>
       {/* Header */}
-      <div style={{ marginBottom: "2.5rem" }}>
-        <h1
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-            fontWeight: 800,
-            color: "var(--text-primary)",
-            letterSpacing: "-0.02em",
-            marginBottom: "0.5rem",
-          }}
-        >
-          🗺️ Locality Rankings
+      <div style={{ marginBottom: "64px", borderBottom: "1px solid var(--color-deep-charcoal)", paddingBottom: "24px" }}>
+        <h1 className="display-xl" style={{ marginBottom: "16px" }}>
+          Locality Rankings.
         </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>
-          Neighbourhoods ranked by average vendor rating from the community
+        <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", maxWidth: "600px" }}>
+          Ranked by average community rating.
         </p>
       </div>
 
@@ -36,129 +27,91 @@ export default async function RankingsPage() {
         <div
           style={{
             textAlign: "center",
-            padding: "5rem 2rem",
-            background: "var(--surface-raised)",
-            border: "1px solid var(--border-subtle)",
-            borderRadius: 16,
+            padding: "80px 32px",
+            background: "var(--color-paper-ivory)",
+            border: "1px solid var(--color-deep-charcoal)",
           }}
         >
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📊</div>
-          <h3 style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "0.5rem" }}>
-            No data yet
-          </h3>
-          <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>
-            Add vendors and rate them to see locality rankings!
+          <p className="body-lg" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px" }}>
+            No data yet. Add vendors and rate them to see locality rankings.
           </p>
-          <Link href="/add" className="btn btn-primary">➕ Add a Vendor</Link>
+          <Link href="/add" className="btn btn-primary btn-lg">
+            Add a Vendor
+          </Link>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          {rankings.map((r, i) => {
-            const medals = ["🥇", "🥈", "🥉"];
-            const medalColors = ["oklch(0.82 0.16 82)", "oklch(0.65 0.01 82)", "oklch(0.60 0.07 52)"];
-            const isTop3 = i < 3;
+        <>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+            {rankings.map((r, i) => {
+              const isTop3 = i < 3;
+              const rankLabel = String(i + 1).padStart(2, "0");
 
-            return (
-              <div
-                key={r.locality}
-                className="card"
-                style={{
-                  padding: "1.25rem 1.5rem",
-                  border: isTop3
-                    ? `1px solid ${["oklch(0.82 0.16 82 / 0.4)", "oklch(0.65 0.01 82 / 0.3)", "oklch(0.60 0.07 52 / 0.3)"][i]}`
-                    : undefined,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                  {/* Rank badge */}
+              return (
+                <div
+                  key={r.locality}
+                  style={{
+                    padding: "28px 32px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "32px",
+                    border: "1px solid var(--color-deep-charcoal)",
+                    borderTop: i === 0 ? "1px solid var(--color-deep-charcoal)" : "none",
+                    background: "var(--color-paper-ivory)",
+                    transition: "background 0.2s ease",
+                  }}
+                  className="hover:bg-[var(--color-chai-cream)]"
+                >
+                  {/* Rank number */}
                   <div
+                    className="display-xl"
                     style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 800,
-                      fontSize: isTop3 ? "1.25rem" : "0.9375rem",
-                      flexShrink: 0,
-                      background: isTop3 ? `${medalColors[i]}22` : "var(--surface-subtle)",
-                      color: isTop3 ? medalColors[i] : "var(--text-muted)",
+                      fontSize: "40px",
+                      lineHeight: 1,
+                      color: isTop3 ? "var(--color-street-saffron)" : "var(--color-surface-dim)",
+                      minWidth: "56px",
+                      fontVariantNumeric: "tabular-nums",
                     }}
                   >
-                    {isTop3 ? medals[i] : i + 1}
+                    {rankLabel}
                   </div>
 
-                  {/* Info */}
+                  {/* Locality info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.5rem" }}>
-                      <div>
-                        <h2
-                          style={{
-                            fontWeight: 700,
-                            fontSize: "1rem",
-                            color: "var(--text-primary)",
-                            marginBottom: "0.125rem",
-                          }}
-                        >
-                          {r.locality}
-                        </h2>
-                        <div style={{ fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
-                          {pluralize(r.vendorCount, "vendor")} ·{" "}
-                          {pluralize(r.totalRatings, "rating")}
-                        </div>
-                      </div>
-
-                      <div style={{ textAlign: "right", flexShrink: 0 }}>
-                        <div
-                          style={{
-                            fontSize: "1.375rem",
-                            fontWeight: 800,
-                            color: r.averageRating > 0 ? "var(--gold)" : "var(--text-muted)",
-                            lineHeight: 1,
-                          }}
-                        >
-                          {r.averageRating > 0 ? r.averageRating.toFixed(1) : "—"}
-                        </div>
-                        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>avg rating</div>
-                      </div>
+                    <h2
+                      className="headline-sm"
+                      style={{
+                        color: "var(--color-deep-charcoal)",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      {r.locality}
+                    </h2>
+                    <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: r.topVendors.length > 0 ? "12px" : "0" }}>
+                      {pluralize(r.vendorCount, "vendor")} · {pluralize(r.totalRatings, "rating")}
                     </div>
 
-                    {/* Progress bar */}
-                    {r.averageRating > 0 && (
-                      <div className="progress-bar" style={{ marginTop: "0.625rem" }}>
-                        <div
-                          className="progress-bar-fill"
-                          style={{ width: `${(r.averageRating / 5) * 100}%` }}
-                        />
-                      </div>
-                    )}
-
-                    {/* Top vendors for this locality */}
+                    {/* Top vendors */}
                     {r.topVendors.length > 0 && (
-                      <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem", flexWrap: "wrap" }}>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                         {r.topVendors.map((v) => (
                           <Link
                             key={v.id}
                             href={`/vendor/${v.slug}`}
+                            className="label-caps hover:text-[var(--color-street-saffron)] transition-colors duration-200"
                             style={{
                               display: "inline-flex",
                               alignItems: "center",
-                              gap: "0.25rem",
-                              fontSize: "0.75rem",
-                              color: "var(--text-secondary)",
-                              background: "var(--surface-overlay)",
-                              border: "1px solid var(--border-subtle)",
-                              padding: "0.2rem 0.5rem",
-                              borderRadius: 99,
+                              gap: "6px",
+                              color: "var(--color-on-surface-variant)",
+                              border: "1px solid var(--border-default)",
+                              padding: "4px 10px",
                               textDecoration: "none",
-                              transition: "all 0.15s ease",
+                              background: "var(--color-surface)",
                             }}
-                            className="hover:border-[oklch(0.70_0.19_55/0.4)] hover:text-[var(--brand-light)]"
                           >
                             {v.name}
                             {v.ratingCount > 0 && (
-                              <span style={{ color: "var(--gold)" }}>
+                              <span style={{ color: "var(--color-street-saffron)" }}>
                                 ★ {(v.ratingSum / v.ratingCount).toFixed(1)}
                               </span>
                             )}
@@ -167,11 +120,43 @@ export default async function RankingsPage() {
                       </div>
                     )}
                   </div>
+
+                  {/* Rating */}
+                  <div style={{ textAlign: "right", flexShrink: 0, minWidth: "80px" }}>
+                    <div
+                      className="headline-sm"
+                      style={{
+                        color: r.averageRating > 0 ? "var(--color-deep-charcoal)" : "var(--color-surface-dim)",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      {r.averageRating > 0 ? (
+                        <>★ {r.averageRating.toFixed(1)}</>
+                      ) : (
+                        "—"
+                      )}
+                    </div>
+                    {r.averageRating > 0 && (
+                      <div className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
+                        avg rating
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+
+          {/* Bottom CTA */}
+          <div style={{ marginTop: "64px", paddingTop: "32px", borderTop: "1px solid var(--color-deep-charcoal)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+            <p className="body-md" style={{ color: "var(--color-on-surface-variant)" }}>
+              Rankings update as new ratings come in.
+            </p>
+            <Link href="/browse" className="label-caps btn btn-secondary" style={{ padding: "10px 24px" }}>
+              Browse vendors
+            </Link>
+          </div>
+        </>
       )}
     </div>
   );
