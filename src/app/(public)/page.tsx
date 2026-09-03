@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
 import {
   getFeaturedVendors,
   getTopRatedVendors,
@@ -39,8 +39,8 @@ export default async function HomePage() {
       {/* ===================== HERO ===================== */}
       <section style={{ position: "relative", minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", margin: "0 -20px" }}>
         {/* Background Catalogue */}
-        <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gridAutoRows: "250px", gap: "2px", zIndex: 0 }}>
-          {Object.values(SPECIALITY_IMAGES).slice(0, 16).map((src, i) => (
+        <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gridTemplateRows: "repeat(3, 1fr)", gap: "4px", zIndex: 0 }}>
+          {Array.from(new Set(Object.values(SPECIALITY_IMAGES))).slice(0, 15).map((src, i) => (
             <div key={i} style={{ position: "relative", width: "100%", height: "100%" }}>
               <Image src={src} alt="Food background" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 50vw, 25vw" />
             </div>
@@ -75,23 +75,23 @@ export default async function HomePage() {
             {/* Discovery Search */}
             <form action="/browse" method="GET" style={{ display: "flex", gap: "8px", width: "100%", maxWidth: "560px", marginBottom: "32px", marginInline: "auto" }}>
               <div style={{ position: "relative", flexGrow: 1 }}>
-                <Search size={18} style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)" }} />
+                <Search size={18} style={{ position: "absolute", left: "20px", top: "50%", transform: "translateY(-50%)", color: "var(--color-outline)" }} />
                 <input 
                   name="search" 
                   placeholder="Search food, vendors or localities..." 
                   className="input" 
-                  style={{ paddingLeft: "48px", height: "64px", fontSize: "16px", background: "var(--color-paper-ivory)" }}
+                  style={{ paddingLeft: "52px", height: "64px", fontSize: "16px", background: "var(--color-paper-ivory)", borderRadius: "32px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
                 />
               </div>
-              <button type="submit" className="btn btn-primary" style={{ height: "64px", padding: "0 32px", background: "var(--color-street-saffron)", color: "white" }}>
+              <button type="submit" className="btn btn-primary" style={{ height: "64px", padding: "0 32px", borderRadius: "32px", fontWeight: "700" }}>
                 Search
               </button>
             </form>
-            <div className="label-caps" style={{ color: "rgba(249, 247, 242, 0.6)", marginBottom: "32px", fontSize: "12px" }}>
+            <div className="label-caps" style={{ color: "rgba(249, 247, 242, 0.8)", marginBottom: "32px", fontSize: "13px" }}>
               Popular searches: Dabeli, Manek Chowk, Law Garden
             </div>
             
-            <Link href="/add" className="label-caps hover:text-[var(--color-street-saffron)] transition-colors duration-200" style={{ color: "rgba(249, 247, 242, 0.8)", textDecoration: "none" }}>
+            <Link href="/add" className="label-caps hover:text-[var(--color-street-saffron)] transition-colors duration-200" style={{ color: "rgba(249, 247, 242, 0.9)", textDecoration: "none" }}>
               + Or submit a vendor
             </Link>
           </div>
@@ -123,30 +123,47 @@ export default async function HomePage() {
                   >
                     <div
                       style={{
-                        padding: "32px",
+                        padding: "24px 32px",
                         display: "flex",
                         alignItems: "center",
-                        gap: "32px",
-                        border: "1px solid var(--color-deep-charcoal)",
+                        gap: "24px",
+                        border: "1px solid var(--border-subtle)",
                         background: "var(--color-paper-ivory)",
-                        transition: "background 0.2s ease",
+                        borderRadius: "var(--radius-xl)",
+                        boxShadow: "var(--shadow-sm)",
+                        transition: "all 0.2s ease",
                       }}
-                      className="hover:bg-[var(--color-chai-cream)]"
+                      className="hover:shadow-[var(--shadow)] hover:border-[var(--border-default)] hover:-translate-y-1"
                     >
-                      <div className="display-xl" style={{ fontSize: "48px", lineHeight: 1, color: "var(--color-street-saffron)", minWidth: "64px" }}>
+                      <div className="display-xl" style={{ fontSize: "40px", lineHeight: 1, color: "var(--color-outline-variant)", minWidth: "56px", fontWeight: "800" }}>
                         0{i + 1}
                       </div>
+                      
+                      {/* Thumbnail Image */}
+                      <div style={{ width: "64px", height: "64px", position: "relative", borderRadius: "var(--radius)", overflow: "hidden", flexShrink: 0 }}>
+                        <Image
+                          src={vendor.primaryImage || getFoodImage(vendor.speciality)}
+                          alt={vendor.name}
+                          fill
+                          style={{ objectFit: "cover" }}
+                          sizes="64px"
+                        />
+                      </div>
+
                       <div style={{ flexGrow: 1 }}>
-                        <div className="headline-md" style={{ marginBottom: "4px", color: "var(--color-deep-charcoal)", textTransform: "uppercase" }}>
+                        <div className="headline-sm" style={{ marginBottom: "4px", color: "var(--color-deep-charcoal)", fontSize: "20px" }}>
                           {vendor.name}
                         </div>
-                        <div className="body-md" style={{ color: "var(--color-on-surface-variant)" }}>
+                        <div className="body-md" style={{ color: "var(--color-on-surface-variant)", fontSize: "14px" }}>
                           {vendor.speciality} · {vendor.locality}
                         </div>
                       </div>
                       <div style={{ textAlign: "right", minWidth: "120px" }}>
-                        <div className="headline-sm" style={{ color: "var(--color-deep-charcoal)", marginBottom: "4px" }}>
-                          ★ {formatRating(vendor.ratingSum, vendor.ratingCount)} · {pluralize(vendor.ratingCount, "rating")}
+                        <div style={{ display: "inline-flex", background: "var(--color-law-garden-green)", color: "white", padding: "4px 8px", borderRadius: "6px", fontWeight: "700", fontSize: "14px", alignItems: "center", gap: "4px", marginBottom: "4px" }}>
+                          {formatRating(vendor.ratingSum, vendor.ratingCount)} <span style={{ fontSize: "10px" }}>★</span>
+                        </div>
+                        <div className="label-caps" style={{ color: "var(--color-outline)", fontSize: "11px" }}>
+                          {pluralize(vendor.ratingCount, "rating")}
                         </div>
                       </div>
                     </div>
@@ -159,28 +176,35 @@ export default async function HomePage() {
 
         {/* ===================== DISCOVERY (CATEGORIES + LOCALITIES) ===================== */}
         <section style={{ marginBottom: "120px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "64px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "64px" }}>
             {/* Food Discovery */}
             <div>
-              <SectionHeader title="By Food." subtitle="What are you craving?" href="/browse" hideLink />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--color-deep-charcoal)", border: "1px solid var(--color-deep-charcoal)" }}>
+              <SectionHeader title="Eat what makes you happy" subtitle="Explore by popular food categories" href="/browse" hideLink />
+              <div style={{ display: "flex", gap: "24px", overflowX: "auto", paddingBottom: "16px", msOverflowStyle: "none", scrollbarWidth: "none" }}>
                 {popularCategories.map((spec) => (
                   <Link
                     key={spec}
                     href={`/browse?speciality=${encodeURIComponent(spec)}`}
                     className="group"
-                    style={{ textDecoration: "none", display: "block" }}
+                    style={{ textDecoration: "none", flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", width: "120px" }}
                   >
                     <div
-                      className="bg-[var(--color-paper-ivory)] group-hover:bg-[var(--color-chai-cream)] transition-all duration-200"
-                      style={{ padding: "24px 16px", height: "100%" }}
+                      className="transition-transform duration-300 group-hover:scale-105"
+                      style={{ width: "120px", height: "120px", borderRadius: "50%", overflow: "hidden", position: "relative", boxShadow: "var(--shadow-sm)" }}
                     >
-                      <div
-                        className="headline-sm text-[var(--color-deep-charcoal)] group-hover:text-[var(--color-street-saffron)] transition-colors duration-200"
-                        style={{ fontSize: "18px", lineHeight: 1.2 }}
-                      >
-                        {spec}
-                      </div>
+                      <Image
+                        src={getFoodImage(spec)}
+                        alt={spec}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        sizes="120px"
+                      />
+                    </div>
+                    <div
+                      className="label-md text-[var(--color-deep-charcoal)] group-hover:text-[var(--color-street-saffron)] transition-colors duration-200"
+                      style={{ textAlign: "center", fontWeight: "600" }}
+                    >
+                      {spec}
                     </div>
                   </Link>
                 ))}
@@ -189,22 +213,22 @@ export default async function HomePage() {
 
             {/* Locality Discovery */}
             <div>
-              <SectionHeader title="By Locality." subtitle="Explore neighbourhoods." href="/browse" hideLink />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--color-deep-charcoal)", border: "1px solid var(--color-deep-charcoal)" }}>
+              <SectionHeader title="Explore Neighbourhoods" subtitle="Find the best street food near you" href="/browse" hideLink />
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
                 {popularLocalities.map((loc) => (
                   <Link
                     key={loc}
                     href={`/browse?locality=${encodeURIComponent(loc)}`}
                     className="group"
-                    style={{ textDecoration: "none", display: "block" }}
+                    style={{ textDecoration: "none" }}
                   >
                     <div
-                      className="bg-[var(--color-paper-ivory)] group-hover:bg-[var(--color-chai-cream)] transition-all duration-200"
-                      style={{ padding: "24px 16px", height: "100%" }}
+                      className="bg-[var(--color-paper-ivory)] group-hover:bg-[var(--color-surface-dim)] group-hover:shadow-[var(--shadow-sm)] transition-all duration-200"
+                      style={{ padding: "12px 24px", borderRadius: "9999px", border: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: "8px" }}
                     >
+                      <MapPin size={16} className="text-[var(--color-street-saffron)]" />
                       <div
-                        className="headline-sm text-[var(--color-deep-charcoal)] group-hover:text-[var(--color-street-saffron)] transition-colors duration-200"
-                        style={{ fontSize: "18px", lineHeight: 1.2 }}
+                        className="label-md text-[var(--color-deep-charcoal)]"
                       >
                         {loc}
                       </div>
@@ -234,32 +258,13 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* ===================== RECENTLY ADDED ===================== */}
-        {recentVendors.length > 0 && (
-          <section style={{ marginBottom: "120px", background: "var(--color-chai-cream)", margin: "0 -20px 120px -20px", padding: "80px 20px" }}>
-            <div className="container-page" style={{ padding: 0 }}>
-              <SectionHeader title="Just In." subtitle="Fresh discoveries from the community." href="/browse?sort=newest" />
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                  gap: "24px",
-                }}
-              >
-                {recentVendors.map((vendor) => (
-                  <VendorCard key={vendor.id} vendor={vendor} isCompact />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* ===================== CTA ===================== */}
         <section
           style={{
             padding: "80px 48px",
-            background: "var(--color-deep-charcoal)",
-            color: "var(--color-paper-ivory)",
+            background: "var(--color-chai-cream)",
+            color: "var(--color-deep-charcoal)",
+            borderRadius: "var(--radius-xl)",
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
             gap: "48px",
@@ -267,15 +272,15 @@ export default async function HomePage() {
           }}
         >
           <div>
-            <h2 className="display-xl" style={{ color: "var(--color-paper-ivory)", marginBottom: "16px", fontSize: "56px" }}>
+            <h2 className="headline-lg" style={{ color: "var(--color-deep-charcoal)", marginBottom: "16px", fontSize: "40px" }}>
               Know a place <br/><span style={{ color: "var(--color-street-saffron)" }}>worth eating at?</span>
             </h2>
           </div>
           <div>
-            <p className="body-lg" style={{ marginBottom: "40px", color: "var(--color-surface-dim)", maxWidth: "400px" }}>
+            <p className="body-lg" style={{ marginBottom: "40px", color: "var(--color-on-surface-variant)", maxWidth: "400px" }}>
               Add a street-food vendor that Ahmedabad should know about.
             </p>
-            <Link href="/add" className="btn btn-lg" style={{ background: "var(--color-street-saffron)", color: "white", borderRadius: 0 }}>
+            <Link href="/add" className="btn btn-primary btn-lg" style={{ borderRadius: "var(--radius-full)" }}>
               Submit a Vendor
             </Link>
           </div>
@@ -318,10 +323,11 @@ function SectionHeader({
       {!hideLink && (
         <Link
           href={href}
-          className="label-caps border border-[var(--color-deep-charcoal)] text-[var(--color-deep-charcoal)] hover:bg-[var(--color-deep-charcoal)] hover:text-[var(--color-paper-ivory)] transition-all duration-200"
+          className="label-caps bg-[var(--color-paper-ivory)] border border-[var(--border-default)] text-[var(--color-deep-charcoal)] hover:bg-[var(--color-surface-dim)] transition-all duration-200"
           style={{
             textDecoration: "none",
             padding: "10px 20px",
+            borderRadius: "var(--radius-full)"
           }}
         >
           View Directory
@@ -353,25 +359,23 @@ function VendorCard({
 }) {
   const avg = vendor.ratingCount > 0 ? vendor.ratingSum / vendor.ratingCount : 0;
   
-  // "Why this place?" logic
   let signal = null;
-  if (vendor.isFeatured) signal = "Editorial Pick";
-  else if (vendor.ratingCount >= 5 && avg >= 4.5) signal = "Community Favourite";
-  else if (vendor.ratingCount === 0) signal = "New Addition";
-  else if (vendor.isVerified) signal = "Verified Vendor";
+  if (vendor.isFeatured) signal = "Must Try";
+  else if (vendor.ratingCount >= 5 && avg >= 4.5) signal = "Top Rated";
+  else if (vendor.ratingCount === 0) signal = "New";
+  else if (vendor.isVerified) signal = "Verified";
 
   return (
     <Link href={`/vendor/${vendor.slug}`} style={{ textDecoration: "none" }}>
-      <div className="card hover:border-[var(--color-street-saffron)] transition-colors duration-300" style={{ display: "flex", flexDirection: "column", height: "100%", background: "var(--color-paper-ivory)" }}>
-        {/* Image / Typographic Placeholder */}
+      <div className="card hover:shadow-[var(--shadow)] transition-all duration-300" style={{ display: "flex", flexDirection: "column", height: "100%", background: "var(--color-paper-ivory)", borderRadius: "var(--radius-xl)" }}>
+        {/* Image */}
         {!isCompact && (
           <div
             style={{
-              height: isEditorial ? "320px" : "200px",
-              borderBottom: "1px solid var(--color-deep-charcoal)",
+              height: isEditorial ? "280px" : "180px",
               position: "relative",
               overflow: "hidden",
-              background: vendor.primaryImage ? "var(--color-surface-dim)" : "var(--color-deep-charcoal)",
+              background: vendor.primaryImage ? "var(--color-surface-dim)" : "var(--color-surface)",
             }}
           >
             {vendor.primaryImage ? (
@@ -381,7 +385,6 @@ function VendorCard({
                 fill
                 style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                className="hover:scale-105"
               />
             ) : (
               <Image
@@ -390,45 +393,80 @@ function VendorCard({
                 fill
                 style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                className="hover:scale-105"
               />
+            )}
+            
+            {/* Zomato-style Floating Rating Badge */}
+            {avg > 0 && (
+              <div 
+                style={{ 
+                  position: "absolute", 
+                  top: "12px", 
+                  right: "12px", 
+                  background: avg >= 4.0 ? "var(--color-law-garden-green)" : "var(--color-street-saffron)", 
+                  color: "#fff", 
+                  padding: "4px 8px", 
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  fontWeight: "700",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                }}
+              >
+                {avg.toFixed(1)} <span style={{ fontSize: "10px" }}>★</span>
+              </div>
+            )}
+
+            {/* Promoted / Signal Badge */}
+            {signal && (
+              <div 
+                style={{ 
+                  position: "absolute", 
+                  bottom: "12px", 
+                  left: "12px", 
+                  background: "rgba(255,255,255,0.95)", 
+                  color: "var(--color-deep-charcoal)", 
+                  padding: "4px 8px", 
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                }}
+              >
+                {signal}
+              </div>
             )}
           </div>
         )}
 
         {/* Content */}
-        <div style={{ padding: "24px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+        <div style={{ padding: "16px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
             <div
               className="headline-sm"
               style={{
-                fontSize: "22px",
-                lineHeight: 1.2,
+                fontSize: "18px",
+                lineHeight: 1.3,
                 color: "var(--color-deep-charcoal)",
               }}
             >
               {vendor.name}
             </div>
-            {avg > 0 && (
-              <div className="label-caps" style={{ color: "var(--color-street-saffron)", minWidth: "40px", textAlign: "right" }}>
-                ★ {avg.toFixed(1)}
+            {isCompact && avg > 0 && (
+              <div style={{ background: avg >= 4.0 ? "var(--color-law-garden-green)" : "var(--color-street-saffron)", color: "#fff", padding: "2px 6px", borderRadius: "4px", fontSize: "12px", fontWeight: "700", display: "flex", alignItems: "center", gap: "2px" }}>
+                {avg.toFixed(1)} <span style={{ fontSize: "10px" }}>★</span>
               </div>
             )}
           </div>
 
-          <div className="body-md" style={{ color: "var(--color-deep-charcoal)", marginBottom: "4px" }}>
+          <div className="body-md" style={{ color: "var(--color-on-surface-variant)", marginBottom: "4px", fontSize: "14px" }}>
             {vendor.speciality}
           </div>
           
-          <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px" }}>
+          <div className="body-md" style={{ color: "var(--color-outline)", fontSize: "13px" }}>
             {vendor.locality}
-          </div>
-
-          {/* "Why this place?" Signal */}
-          <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
-            <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
-              {signal ? signal : pluralize(vendor.ratingCount, "rating")}
-            </span>
           </div>
         </div>
       </div>

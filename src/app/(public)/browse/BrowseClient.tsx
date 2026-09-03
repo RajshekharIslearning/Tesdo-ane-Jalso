@@ -103,7 +103,9 @@ export default function BrowseClient() {
         className="browse-filter-bar"
         style={{
           background: "var(--color-paper-ivory)",
-          border: "1px solid var(--color-deep-charcoal)",
+          borderRadius: "var(--radius-xl)",
+          boxShadow: "var(--shadow-sm)",
+          border: "1px solid var(--border-subtle)",
           padding: "24px",
           marginBottom: "48px",
           display: "flex",
@@ -114,29 +116,29 @@ export default function BrowseClient() {
       >
         {/* Search */}
         <div style={{ flex: "1 1 240px", position: "relative" }}>
-          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Search</label>
+          <label className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "8px" }}>Search</label>
           <div style={{ position: "relative" }}>
-            <Search size={18} style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)" }} />
+            <Search size={18} style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: "var(--color-outline)" }} />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Vendors or food..."
               className="input"
-              style={{ paddingLeft: "32px", fontSize: "16px" }}
+              style={{ paddingLeft: "42px", fontSize: "16px", background: "var(--color-surface)", border: "none", borderRadius: "var(--radius-lg)" }}
             />
           </div>
         </div>
 
         {/* Locality */}
         <div style={{ position: "relative", flex: "1 1 180px" }}>
-          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Locality</label>
+          <label className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "8px" }}>Locality</label>
           <div style={{ position: "relative" }}>
-            <MapPin size={18} style={{ position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", color: "var(--color-deep-charcoal)", pointerEvents: "none" }} />
+            <MapPin size={18} style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: "var(--color-outline)", pointerEvents: "none" }} />
             <select
               value={locality}
               onChange={(e) => setLocality(e.target.value)}
               className="input"
-              style={{ paddingLeft: "32px", appearance: "none", cursor: "pointer", fontSize: "16px" }}
+              style={{ paddingLeft: "42px", appearance: "none", cursor: "pointer", fontSize: "16px", background: "var(--color-surface)", border: "none", borderRadius: "var(--radius-lg)" }}
             >
               <option value="">All Localities</option>
               {[...LOCALITIES].sort().map((l) => (
@@ -148,12 +150,12 @@ export default function BrowseClient() {
 
         {/* Speciality */}
         <div style={{ position: "relative", flex: "1 1 180px" }}>
-          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Category</label>
+          <label className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "8px" }}>Category</label>
           <select
             value={speciality}
             onChange={(e) => setSpeciality(e.target.value)}
             className="input"
-            style={{ appearance: "none", cursor: "pointer", fontSize: "16px" }}
+            style={{ appearance: "none", cursor: "pointer", fontSize: "16px", background: "var(--color-surface)", border: "none", borderRadius: "var(--radius-lg)" }}
           >
             <option value="">All Categories</option>
             {SPECIALITIES.map((s) => (
@@ -164,12 +166,12 @@ export default function BrowseClient() {
 
         {/* Sort */}
         <div style={{ position: "relative", flex: "1 1 180px" }}>
-          <label className="label-caps" style={{ color: "var(--color-deep-charcoal)", marginBottom: "8px" }}>Sort By</label>
+          <label className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "8px" }}>Sort By</label>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
             className="input"
-            style={{ appearance: "none", cursor: "pointer", fontSize: "16px" }}
+            style={{ appearance: "none", cursor: "pointer", fontSize: "16px", background: "var(--color-surface)", border: "none", borderRadius: "var(--radius-lg)" }}
           >
             {SORT_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -178,14 +180,14 @@ export default function BrowseClient() {
         </div>
 
         {hasFilters && (
-          <button onClick={clearFilters} className="btn" style={{ border: "1px solid var(--color-deep-charcoal)", color: "var(--color-deep-charcoal)", background: "transparent", padding: "10px 20px" }}>
+          <button onClick={clearFilters} className="btn btn-secondary" style={{ padding: "10px 20px" }}>
             Clear Filters
           </button>
         )}
       </div>
 
       {/* RESULT COUNT */}
-      <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", borderBottom: "1px solid var(--color-deep-charcoal)", paddingBottom: "16px" }}>
+      <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "32px", borderBottom: "1px solid var(--border-default)", paddingBottom: "16px" }}>
         {loading ? "Searching Directory..." : `Showing ${pluralize(result?.total ?? 0, "Result")}`}
       </div>
 
@@ -199,7 +201,7 @@ export default function BrowseClient() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
               gap: "24px",
               marginBottom: "64px",
             }}
@@ -211,7 +213,7 @@ export default function BrowseClient() {
 
           {/* PAGINATION */}
           {result!.totalPages > 1 && (
-            <div style={{ display: "flex", justifyContent: "center", gap: "16px", alignItems: "center", borderTop: "1px solid var(--color-deep-charcoal)", paddingTop: "32px" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: "16px", alignItems: "center", borderTop: "1px solid var(--border-default)", paddingTop: "32px" }}>
               <button
                 disabled={page === 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
@@ -243,18 +245,23 @@ export default function BrowseClient() {
 
 function VendorCard({ vendor }: { vendor: VendorSummary }) {
   const avg = vendor.ratingCount > 0 ? vendor.ratingSum / vendor.ratingCount : 0;
+  
+  let signal = null;
+  if (vendor.isFeatured) signal = "Must Try";
+  else if (vendor.ratingCount >= 5 && avg >= 4.5) signal = "Top Rated";
+  else if (vendor.ratingCount === 0) signal = "New";
+  else if (vendor.isVerified) signal = "Verified";
 
   return (
     <Link href={`/vendor/${vendor.slug}`} style={{ textDecoration: "none" }}>
-      <div className="card" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        {/* Image / Typographic Placeholder */}
+      <div className="card hover:shadow-[var(--shadow)] transition-all duration-300" style={{ display: "flex", flexDirection: "column", height: "100%", background: "var(--color-paper-ivory)", borderRadius: "var(--radius-xl)" }}>
+        {/* Image */}
         <div
           style={{
-            height: "240px",
-            borderBottom: "1px solid var(--color-deep-charcoal)",
+            height: "180px",
             position: "relative",
             overflow: "hidden",
-            background: vendor.primaryImage ? "var(--color-surface-dim)" : "var(--color-chai-cream)",
+            background: vendor.primaryImage ? "var(--color-surface-dim)" : "var(--color-surface)",
           }}
         >
           {vendor.primaryImage ? (
@@ -264,7 +271,6 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
               fill
               style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
               sizes="(max-width: 640px) 100vw, 300px"
-              className="hover:scale-105"
             />
           ) : (
             <Image
@@ -273,72 +279,74 @@ function VendorCard({ vendor }: { vendor: VendorSummary }) {
               fill
               style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
               sizes="(max-width: 640px) 100vw, 300px"
-              className="hover:scale-105"
             />
           )}
           
-          <div style={{ position: "absolute", top: 16, left: 16, display: "flex", flexDirection: "column", gap: "8px" }}>
-            {vendor.isFeatured && (
-              <div
-                className="label-caps"
-                style={{
-                  background: "var(--color-deep-charcoal)",
-                  color: "var(--color-paper-ivory)",
-                  padding: "4px 8px",
-                  border: "1px solid var(--color-deep-charcoal)",
-                }}
-              >
-                Featured
-              </div>
-            )}
-            {vendor.isVerified && (
-              <div
-                className="label-caps"
-                style={{
-                  background: "var(--color-law-garden-green)",
-                  color: "white",
-                  padding: "4px 8px",
-                  border: "1px solid var(--color-law-garden-green)",
-                }}
-              >
-                Verified
-              </div>
-            )}
-          </div>
+          {/* Zomato-style Floating Rating Badge */}
+          {avg > 0 && (
+            <div 
+              style={{ 
+                position: "absolute", 
+                top: "12px", 
+                right: "12px", 
+                background: avg >= 4.0 ? "var(--color-law-garden-green)" : "var(--color-street-saffron)", 
+                color: "#fff", 
+                padding: "4px 8px", 
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: "700",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+              }}
+            >
+              {avg.toFixed(1)} <span style={{ fontSize: "10px" }}>★</span>
+            </div>
+          )}
+
+          {/* Promoted / Signal Badge */}
+          {signal && (
+            <div 
+              style={{ 
+                position: "absolute", 
+                bottom: "12px", 
+                left: "12px", 
+                background: "rgba(255,255,255,0.95)", 
+                color: "var(--color-deep-charcoal)", 
+                padding: "4px 8px", 
+                borderRadius: "4px",
+                fontSize: "12px",
+                fontWeight: "600",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+              }}
+            >
+              {signal}
+            </div>
+          )}
         </div>
 
         {/* Content */}
-        <div style={{ padding: "24px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+        <div style={{ padding: "16px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
             <div
               className="headline-sm"
               style={{
-                fontSize: "22px",
-                lineHeight: 1.2,
+                fontSize: "18px",
+                lineHeight: 1.3,
                 color: "var(--color-deep-charcoal)",
               }}
             >
               {vendor.name}
             </div>
-            {avg > 0 && (
-              <div className="label-caps" style={{ color: "var(--color-street-saffron)", minWidth: "40px", textAlign: "right" }}>
-                ★ {avg.toFixed(1)}
-              </div>
-            )}
           </div>
 
-          <div className="body-md" style={{ color: "var(--color-deep-charcoal)", marginBottom: "4px" }}>
+          <div className="body-md" style={{ color: "var(--color-on-surface-variant)", marginBottom: "4px", fontSize: "14px" }}>
             {vendor.speciality}
           </div>
           
-          <div className="label-caps" style={{ color: "var(--color-on-surface-variant)", marginBottom: "24px" }}>
+          <div className="body-md" style={{ color: "var(--color-outline)", fontSize: "13px" }}>
             {vendor.locality}
-          </div>
-
-          <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--border-default)" }}>
-            <span className="label-caps" style={{ color: "var(--color-on-surface-variant)" }}>
-              {vendor.isFeatured ? "Editorial Pick" : vendor.isVerified ? "Verified Vendor" : vendor.ratingCount === 0 ? "New Listing" : vendor.ratingCount >= 5 && avg >= 4.5 ? "Community Favourite" : pluralize(vendor.ratingCount, "rating")}
-            </span>
           </div>
         </div>
       </div>
@@ -353,21 +361,17 @@ function SkeletonGrid() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
         gap: "24px",
       }}
     >
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} style={{ border: "1px solid var(--color-deep-charcoal)", background: "var(--color-paper-ivory)" }}>
-          <div style={{ height: "240px", background: "var(--color-surface-dim)", borderBottom: "1px solid var(--color-deep-charcoal)" }} />
-          <div style={{ padding: "24px" }}>
-            <div style={{ height: "24px", width: "70%", background: "var(--color-surface-dim)", marginBottom: "16px" }} />
-            <div style={{ height: "16px", width: "40%", background: "var(--color-surface-dim)", marginBottom: "24px" }} />
-            <div style={{ height: "1px", background: "var(--color-deep-charcoal)", opacity: 0.1, marginBottom: "16px" }} />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div style={{ height: "14px", width: "60px", background: "var(--color-surface-dim)" }} />
-              <div style={{ height: "14px", width: "40px", background: "var(--color-surface-dim)" }} />
-            </div>
+        <div key={i} className="card" style={{ height: "300px", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-xl)", background: "var(--color-paper-ivory)", overflow: "hidden" }}>
+          <div style={{ height: "180px", background: "var(--color-surface-dim)" }} />
+          <div style={{ padding: "16px" }}>
+            <div style={{ height: "18px", width: "70%", background: "var(--color-surface-dim)", marginBottom: "8px", borderRadius: "4px" }} />
+            <div style={{ height: "14px", width: "40%", background: "var(--color-surface-dim)", marginBottom: "8px", borderRadius: "4px" }} />
+            <div style={{ height: "14px", width: "50%", background: "var(--color-surface-dim)", borderRadius: "4px" }} />
           </div>
         </div>
       ))}
@@ -383,7 +387,8 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       style={{
         textAlign: "center",
         padding: "80px 32px",
-        border: "1px solid var(--color-deep-charcoal)",
+        borderRadius: "var(--radius-xl)",
+        border: "1px dashed var(--border-default)",
         background: "var(--color-paper-ivory)",
       }}
     >

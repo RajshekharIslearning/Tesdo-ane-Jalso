@@ -199,6 +199,7 @@ export async function createVendor(data: {
   address?: string;
   description?: string;
   addedById?: string;
+  status?: string;
 }) {
   let slug = generateSlug(data.name);
   // Check uniqueness
@@ -208,8 +209,8 @@ export async function createVendor(data: {
   return prisma.vendor.create({
     data: {
       ...data,
+      status: data.status ?? "APPROVED",
       slug,
-      status: "APPROVED", // auto-approve for now; change to PENDING for moderation
     },
   });
 }

@@ -6,7 +6,8 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient() {
   return new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    // Removed "query" from development logs to prevent terminal spam
+    log: ["error", "warn"],
   });
 }
 

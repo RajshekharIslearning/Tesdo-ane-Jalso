@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { vendorSchema, vendorSearchSchema } from "@/schemas";
 import { getVendors, createVendor, getVendorNames } from "@/services/vendor.server";
 import { findSimilar } from "@/utils/levenshtein";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: NextRequest) {
   try {
@@ -60,7 +61,11 @@ export async function POST(request: NextRequest) {
       locality,
       address: address?.trim() || undefined,
       description: description?.trim() || undefined,
+      status: forceAdd ? "PENDING" : "APPROVED",
     });
+
+    // Invalidate caches so the dashboard and public site immediately update
+    revalidatePath("/", "layout");
 
     return NextResponse.json({ success: true, data: vendor }, { status: 201 });
   } catch (error) {

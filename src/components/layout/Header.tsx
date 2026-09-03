@@ -22,7 +22,7 @@ export default function Header() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        borderBottom: "1px solid var(--border-default)",
+        boxShadow: "0 1px 12px rgba(0,0,0,0.06)",
         background: "var(--color-surface)",
       }}
     >
@@ -61,11 +61,11 @@ export default function Header() {
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily: "var(--font-sans)",
                   fontSize: "1.25rem",
-                  fontWeight: 700,
+                  fontWeight: 800,
                   color: "var(--color-deep-charcoal)",
-                  letterSpacing: "-0.02em",
+                  letterSpacing: "-0.03em",
                   lineHeight: 1.1,
                 }}
               >

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getVendorBySlug, updateVendor, deleteVendor } from "@/services/vendor.server";
 import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   _request: NextRequest,
@@ -32,6 +33,10 @@ export async function PATCH(
   try {
     const body = await request.json();
     const vendor = await updateVendor(id, body);
+    
+    // Invalidate caches so the dashboard and public site immediately update
+    revalidatePath("/", "layout");
+    
     return NextResponse.json({ success: true, data: vendor });
   } catch (error) {
     console.error("[PATCH /api/vendors/[id]]", error);
@@ -51,6 +56,10 @@ export async function DELETE(
   const { id } = await params;
   try {
     await deleteVendor(id);
+    
+    // Invalidate caches so the dashboard and public site immediately update
+    revalidatePath("/", "layout");
+    
     return NextResponse.json({ success: true, message: "Vendor deleted" });
   } catch (error) {
     console.error("[DELETE /api/vendors/[id]]", error);

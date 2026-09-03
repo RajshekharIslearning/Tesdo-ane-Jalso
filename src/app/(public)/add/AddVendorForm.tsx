@@ -39,7 +39,11 @@ export default function AddVendorForm() {
       const json = await res.json();
 
       if (json.success) {
-        toast.success(`${data.name} added successfully! 🎉`);
+        if (forceAdd) {
+          toast.success(`${data.name} submitted for admin review! 🕒`);
+        } else {
+          toast.success(`${data.name} added successfully! 🎉`);
+        }
         router.push("/browse");
       } else if (json.error === "DUPLICATE_WARNING") {
         setSimilar(json.similar ?? []);
